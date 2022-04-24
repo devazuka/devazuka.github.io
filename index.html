@@ -1,78 +1,100 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-  	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔰</text></svg>">
-	<title>Devazuka</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:image/svg+xml,<svg viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'><path fill='%23fff' stroke='%23014' d='M39,1L20.5,11L20.5,39L39,29Z'/><path fill='%23014' stroke='%23fff' d='M1,1L19.5,11L19.5,39L1,29Z'/></svg>">
+  <title>Devazuka</title>
+  
 <style type="text/css">
-	@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@200;700');
-	h1 {
-		position: relative;
-  		display: inline-block;
-	}
-	
-	h1 div {
-		text-align: center;
-		font-family: monospace;
-	}
+  @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@200;700');
+  h1 {
+    position: relative;
+      display: inline-block;
+  }
+  
+  h1 div {
+    text-align: center;
+    font-family: monospace;
+  }
 
-	code, div {
-		font-family: 'Roboto Mono';
-		font-style: normal;
-		color: #000a3e;
-	}
+  html, body {
+    border: 0;
+    margin: 0;
+  }
+  header {
+    display: flex;
+    height: 30em;
+  }
 
-	html, body {
-		border: 0;
-		margin: 0;
-	}
-	body {
-		display: flex;
-		height: 100vh;
-	}
+  #left, #right {
+    position: relative;
+    padding-top: 2em;
+    width: 50vw;
+    background-size: 4em;
+    background-repeat: no-repeat;
+  }
+  #right {
+    padding-left: 5em;
+    background-color: white;
+    background-position: 0.1% 2em;
+    background-image: url("data:image/svg+xml,<svg viewBox='0 0 2 4' xmlns='http://www.w3.org/2000/svg'><path fill='%23014' d='M2,0L0,1L0,4L2,3Z' /></svg>");
 
-	#left, #right {
-		white-space: pre-wrap;
-		position: relative;
-		padding: 2em 0.1em;
-	}
-	#left {
-		width: 5em;
-		background: #000a3e;
-		color: white;
-		text-align: right;
-		font-weight: 700;
-	}
-	span {
-		font-size: 1.5em;
-		margin-bottom: 2px solid;
-	}
-	#logo {
-		position: fixed;
-	}
-	#logo:after, #logo:before {
-		content: ' ';
-		width: 2em;
-		height: 4em;
-		color: black;
-		opacity: 0.5;
-	}
+  }
+  #left {
+    text-align: right;
+    padding-right: 5em;
+    background-color: #014;
+    background-position: 100.1% 2em;
+    background-image: url("data:image/svg+xml,<svg viewBox='0 0 2 4' xmlns='http://www.w3.org/2000/svg'><path fill='white' d='M0,0L2,1L2,4L0,3Z' /></svg>");
+  }
+  * {
+    font-family: 'Roboto Mono';
+    color: #014;
+    box-sizing: border-box;
+  }
+  header i i, header b b {
+    transform: skewX(16deg);
+    display: inline-block;
+    font-style: normal;
+    color: inherit;
+  }
+  header div > i, header div > b {
+    padding: 0.1em;
+    transform: skewX(-16deg);
+    display: inline-block;
+  }
+  header div > b > b { color: #fff }
+  header div > b { background-color: #014 }
+  header div > i { background-color: #fff }
+  header div > i > i { color: #014 }
+  .word {
+    display: inline-flex;
+    margin-top: 1em;
+  }
 </style>
 </head>
 <body>
-<div id="logo">?</div>
-<div id="left"><span>DEV</span>
+<header>
+<!-- div id="logo">
+<svg viewBox="0 0 4 4" xmlns="http://www.w3.org/2000/svg">
+  <path fill="#014" d="M4,0L2,1L2,4L4,3Z" />
+  <path fill="#fff" d="M0,0 L2,1L2,4L0,3Z" />
+  <path fill='white' d='M0,0 L2,1L2,4L0,3Z' />
+</svg>
+</div -->
+<div id="left">
 
-exp
-co
-co
+<div class="word"><b><b>DEV</b></b><i><i>AZUKA</i></i></div>
+<div class="word"><b><b>co</b></b><i><i>learning</i></i></div>
+
 </div>
-<div id="right"><span>AZUKA</span>
+<div id="right">
 
-erience
-working
-learning
+<div class="word"><b><b>exp</b></b><i><i>erience</i></i></div>
+<div class="word"><b><b>co</b></b><i><i>working</i></i></div>
 
+
+</header>
 </body>
 </html>
