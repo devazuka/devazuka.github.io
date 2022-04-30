@@ -3,9 +3,27 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="data:image/svg+xml,<svg viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'><path fill='%23fff' stroke='%23014' d='M39,1L20.5,11L20.5,39L39,29Z'/><path fill='%23014' stroke='%23fff' d='M1,1L19.5,11L19.5,39L1,29Z'/></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'><path fill='%23fff' stroke='%23014' d='M39,1L20.5,11L20.5,39L39,29Z'/><path fill='%23014' stroke='%23fff' d='M1,1L19.5,11L19.5,39L1,29Z'/></svg>">
+
+  <!-- Primary Meta Tags -->
+  <meta name="title" content="DEVAZUKA">
+  <meta name="description" content="Coding, colearning, coworking and experiences in Lisbon">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://devazuka.com/">
+  <meta property="og:title" content="DEVAZUKA">
+  <meta property="og:description" content="Coding, colearning, coworking and experiences in Lisbon">
+  <meta property="og:image" content="https://devazuka.com/thumb.jpg">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://devazuka.com/">
+  <meta property="twitter:title" content="DEVAZUKA">
+  <meta property="twitter:description" content="Coding, colearning, coworking and experiences in Lisbon">
+  <meta property="twitter:image" content="https://devazuka.com/thumb.jpg">
+
   <title>DEVAZUKA</title>
-  
 <style type="text/css">
   /* GLOBAL RULES */
   @font-face {
@@ -32,33 +50,42 @@
     --c2: #556082;
     --c1: #2b3963;
     --c0: #014;
-    --min: 560px;
-    --full: calc(max(100vw, var(--min)));
-    --half: calc(max(50vw, var(--min) / 2));
-    --header-padding: calc((100vw - 1080px) / 2);
+    --min: 480px;
+    --max: 1080px;
+    --slant: calc(min(2.8vw, 30px));
+    --rlant: calc(100% - var(--slant));
   }
 
   *, *::before, *::after {
     font-family: 'Roboto Mono', monospace;
-    color: var(--c0);
+    color: inherit;
     box-sizing: border-box;
     margin: 0;
   }
   html, body { height: 100% }
   body {
     font-size: 1.2em;
-    background: #8088a2;
     line-height: 1.5;
-    min-width: var(--min);
+    background-color: var(--c6  );
     -webkit-font-smoothing: antialiased;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
   }
   img, picture, video, canvas, svg { display: block; max-width: 100% }
   input, button, textarea, select { font: inherit }
   p, h1, h2, h3, h4, h5, h6 { overflow-wrap: break-word }
+  h2:before {
+    content: '/#';
+    opacity: 0.5;
+    user-select: none;
+  } 
 
+
+  /* ATOMS */
+  .wide {
+    width: 100vw;
+    min-width: var(--min);
+    max-width: var(--max);
+    margin: 0 auto;
+  }
 
   /* ACCESSIBILITY RULES */
   /* visualy hide an element but let the reader find it */
@@ -81,43 +108,19 @@
     position: relative;
     display: inline-block;
   }
-  
-  h1 div {
-    text-align: center;
-    font-family: monospace;
-  }
 
-  header {
-    width: var(--full);
-    display: flex;
-    box-shadow: 0 -16px 80px 22px var(--c2), 0 0 5px 1px var(--c0);
-    overflow: hidden;
+  h1 svg {
+    margin: 0 12px;
   }
-  header > div:nth-child(1), header > div:nth-child(2) {
+  
+  header {
+    margin: 0 auto;
+    display: flex;
+    overflow: hidden;
     position: relative;
-    background-size: 1.5em;
-    background-repeat: no-repeat;
     justify-content: space-evenly;
     display: flex;
     align-items: center;
-  }
-  header > div:nth-child(2) {
-    flex-grow: 1;
-    flex-wrap: wrap;
-    padding-left: 2em;
-    background-color: var(--c6);
-    background-position: 0% center;
-    background-image: url("data:image/svg+xml,<svg viewBox='0 0 2 4' xmlns='http://www.w3.org/2000/svg'><path fill='%23014' d='M2,0L0,1L0,4L2,3Z' /></svg>");
-  }
-  header > div:nth-child(1) {
-    min-width: 14.4em;
-    flex-shrink: 0;
-    justify-content: right;
-    padding: 0 3em 0 1em;
-    background-color: var(--c0);
-    background-position: 100% center;
-    background-image: url("data:image/svg+xml,<svg viewBox='0 0 2 4' xmlns='http://www.w3.org/2000/svg'><path fill='white' d='M0,0L2,1L2,4L0,3Z' /></svg>");
-    box-shadow: 2px -10px 13px -15px var(--c6) inset, 2px -10px 2px -10px var(--c6) inset;
   }
   h1, header .word { margin: 0.15em 0; }
   header i i, header b b {
@@ -131,62 +134,181 @@
     transform: skewX(-16deg);
     display: inline-block;
   }
+  header a > i > i { color: var(--c0); font-weight: 200 }
   header a > b > b { color: var(--c6) }
   header a > b { background-color: var(--c0) }
+  header a > b { border-right-width: 0 }
+  header a > i { border-left-width: 0 }
   header a > i { background-color: var(--c6) }
-  header a > i > i { color: var(--c0); font-weight: 200 }
+  header a:hover > b > b { color: var(--c0) }
+  header a:hover > svg { transform: scaleX(-1) }
+  header a:hover > i > i { color: var(--c6) }
+  header a:hover > b { background-color: var(--c6) }
+  header a:hover > i { background-color: var(--c0) }
+  header a:focus { outline: none }
+  header a:focus > b > b,
+  header a:focus > i > i { text-decoration: underline }
   header a { display: inline-flex }
+  @media only screen and (max-width: 800px)  {
+    header > a { display: none }
+  }
+
+  /* SECTION OVERVIEW RULES */
+  #overview {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+    min-width: var(--min);
+    max-width: var(--max);
+    margin: 0 auto;
+  }
+
+  #overview > div#space {
+    top: 0;
+    width: 100%;
+    height: 640px;
+    background-image: url(./place.jpeg);
+    background-size: cover;
+    background-position: center bottom;
+    grid-area: 1 / 1 / 4 / 6;
+    clip-path: polygon(0 var(--slant), 100% 0%, 100% var(--rlant), 0 100%);
+  }
+  #overview > form {
+    color: var(--c6);
+    background-color: var(--c0);
+    padding: 1em 1em 2em;
+    grid-area: 3 / 2 / 5 / 5;
+    clip-path: polygon(0 0, 100% var(--slant), 100% 100%, 0 var(--rlant));
+  }
+
+  #overview > form > fieldset > label dd { font-weight: 900 }
+  #overview > form > fieldset > label dl {
+    text-align: center;
+    display: block;
+    width: 100%;
+  }
+  #overview > form > fieldset > label:hover {
+    background-image: linear-gradient(var(--c1), var(--c2));
+    border: 3px solid var(--c2);
+  }
+  #overview > form > fieldset > label {
+    display: flex;
+    padding: 1em;
+    color: var(--c6);
+    background-image: linear-gradient(var(--c1), var(--c0));
+    border: 3px solid var(--c1);
+    border-radius: 12px;
+  }
+  #overview input[type="radio"]:focus+label { text-decoration: underline }
+  #overview input[type="radio"]:active+label { border-color: var(--c3) }
+  #overview input[type="radio"]:checked+label { border-color: var(--c5) }
+  #overview > form > fieldset {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-column-gap: 12px;
+    border: 0;
+  }
 
   @media only screen and (max-width: 800px)  {
-    header a[href="#experience"], header a[href="#coding"] {
-      margin-right: calc(10vw);
-    }
-    header > div:nth-child(2) a {
-      flex-grow: 1;
-    }
-  }
-  @media only screen and (min-width: 1080px)  {
-    header > div:nth-child(2) {
-      padding-right: var(--header-padding);
-    }
-    header > div:nth-child(1) {
-      padding-left: calc(max(1em, var(--header-padding)));
+    #overview {
+      grid-template-columns: 1fr 3fr 3fr 3fr 1fr;
     }
   }
 
   /* FOOTER RULES */
-  footer, footer * {
+  footer {
     background-color: var(--c1);
+    padding: 18px;
+  }
+  footer, footer * {
     color: var(--c6);
+  }
+  footer ul {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    justify-content: center;
   }
   footer ul li {
     list-style: none;
   }
-  footer ul {
+  footer a {
     display: flex;
+    padding: 6px;
+    border-radius: 12px;
+    margin: 6px;
+    background-image: linear-gradient(var(--c1), var(--c0));
+    border: 2px solid var(--c1);
   }
-  footer a { display: flex }
+  footer a:focus {
+    border: 2px solid var(--c0);
+    outline: none;
+  }
+  footer a:hover {
+    display: flex;
+    padding: 6px;
+    border-radius: 12px;
+    margin: 6px;
+    border: 2px solid var(--c3);
+    background-image: linear-gradient(var(--c1), var(--c3));
+  }
   footer a svg {
     display: inline-flex;
     align-items: center;
   }
   footer svg path { fill: var(--c6) }
+
 </style>
 </head>
 <body>
-<header>
-  <div>
-    <h1 id="devazuka"><a href="#devazuka"><b><b>DEV</b></b><i><i>AZUKA</i></i></a></h1>
-  </div>
-  <div>
-    <a href="#coding"><b><b>co</b></b><i><i>ding</i></i></a>
-    <a href="#experience"><b><b>exp</b></b><i><i>erience</i></i></a>
-    <a href="#coworking"><b><b>co</b></b><i><i>working</i></i></a>
-    <a href="#colearnig"><b><b>co</b></b><i><i>learning</i></i></a>
-  </div>
+<header class="wide">
+  <h1 id="devazuka">
+    <a href="#devazuka">
+      <b><b>DEV</b></b><i><i>AZUKA</i></i>
+      <svg height="60" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path fill="#fff" stroke="#014" d="M39,1L20.5,11L20.5,39L39,29Z" /><path fill="#014" stroke="#fff" d="M1,1L19.5,11L19.5,39L1,29Z" /></svg>
+    </a>
+  </h1>
+  <a href="#coding"><b><b>co</b></b><i><i>ding</i></i></a>
+  <a href="#experience"><b><b>exp</b></b><i><i>erience</i></i></a>
+  <a href="#coworking"><b><b>co</b></b><i><i>working</i></i></a>
+  <a href="#colearnig"><b><b>co</b></b><i><i>learning</i></i></a>
 </header>
-<section>
-  <h2 id="coding">Coding</h2>
+<section id="overview">
+  <div id="space">
+    
+  </div>
+  <form>
+    <h2>access</h2>
+    <fieldset>
+      <input id="day" type="radio" name="pass" class="sr-only">
+      <label for="day">
+        <dl><dt>1&nbsp;day</dt><dd>15€</dd></dl>
+      </label>
+      <input id="week" type="radio" name="pass" class="sr-only">
+      <label for="week">
+        <dl><dt>7&nbsp;days</dt><dd>65€</dd></dl>
+      </label>
+      <input id="month" type="radio" name="pass" class="sr-only">
+      <label for="month">
+        <dl><dt>30&nbsp;days</dt><dd>175€</dd></dl>
+      </label>
+    </fieldset>
+  </form>
+  <!--
+  A space to
+  - learn
+  - meetup
+  - support
+  - progress
+  - improve
+  - discover
+  -->
+</section>
+<section class="wide">
+  <h2 id="coding">coding</h2>
   <div>
     
   </div>
@@ -203,16 +325,16 @@
     
   </div>
 </section>
-<section>
+<section class="wide">
   
 </section>
 <section>
   
 </section>
-<section>
+<section class="wide">
   
 </section>
-<footer>
+<footer class="wide">
   <ul>
     <li><a href="https://www.instagram.com/devazuka/" title="Insta"><svg aria-hidden=true focusable=false xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.25a1.25 1.25 0 0 0-2.5 0 1.25 1.25 0 0 0 2.5 0zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg><span class="sr-only">Insta</span></a></li>
     <li><a href="https://twitter.com/devazuka/" title="Twitter"><svg aria-hidden=true focusable=false xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M22.162 5.656a8.384 8.384 0 0 1-2.402.658A4.196 4.196 0 0 0 21.6 4c-.82.488-1.719.83-2.656 1.015a4.182 4.182 0 0 0-7.126 3.814 11.874 11.874 0 0 1-8.62-4.37 4.168 4.168 0 0 0-.566 2.103c0 1.45.738 2.731 1.86 3.481a4.168 4.168 0 0 1-1.894-.523v.052a4.185 4.185 0 0 0 3.355 4.101 4.21 4.21 0 0 1-1.89.072A4.185 4.185 0 0 0 7.97 16.65a8.394 8.394 0 0 1-6.191 1.732 11.83 11.83 0 0 0 6.41 1.88c7.693 0 11.9-6.373 11.9-11.9 0-.18-.005-.362-.013-.54a8.496 8.496 0 0 0 2.087-2.165z"/></svg><span class="sr-only">Twitter</span></a></li>
