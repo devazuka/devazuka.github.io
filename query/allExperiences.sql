@@ -1,0 +1,1 @@
+SELECT * FROM experience WHERE rm IS NULL ORDER BY id ASC;
