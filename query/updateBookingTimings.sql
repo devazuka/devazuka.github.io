@@ -1,4 +1,4 @@
 -- tests only
 UPDATE booking
-SET at=:at, start=:start
-WHERE id=:id
+  SET at = :at, open = :open, rm = :rm
+WHERE id = :id

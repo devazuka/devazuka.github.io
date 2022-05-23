@@ -1,4 +1,4 @@
 SELECT *
 FROM booking
-WHERE id=:id
+WHERE id = :id
 LIMIT 1

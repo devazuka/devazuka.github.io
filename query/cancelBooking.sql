@@ -1,3 +1,3 @@
 UPDATE booking
-SET rm=:rm
-WHERE id=:id
+  SET rm = :rm
+WHERE id = :id

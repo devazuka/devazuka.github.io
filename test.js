@@ -1,18 +1,10 @@
 import { deepStrictEqual as eq, throws } from 'assert'
 
-// imports
 import { D, H, M } from './util.js'
-import { bookExperience, cancelBooking } from './booking.js'
+import { book, cancelBooking } from './booking.js'
 import { grantCredit, chargeCredit } from './credit.js'
 import { createUser } from './user.js'
 import db, { sql } from './sqlite.js'
-import {
-  FULL_DAY,
-  HALF_DAY,
-  HAPPY_HOUR,
-  MEETING_1H,
-  MEETING_2H,
-} from './experience.js'
 
 // setup
 const richUser = createUser({ mail: 'rich@devazuka.com', name: 'Rich boi' })
@@ -23,29 +15,31 @@ const poorUser = createUser({ mail: 'poor@devazuka.com', name: 'Poor boi' })
 
 grantCredit(poorUser.mail, 2)
 
-const start = Date.now() - 1000
+const start = new Date('2224-05-23T08:03:16.163Z').getTime()
+const { now } = Date
+const nowDiff = start - now()
+globalThis.Date = class extends Date {
+  constructor(...args) {
+    args.length ? super(...args) : super(Date.now())
+  }
+}
+globalThis.Date.now = () => now() + nowDiff
 
 // bookings need a start time
-throws(() => bookExperience({ experience: FULL_DAY, mail: poorUser.mail }), {
+throws(() => book({ space: 'desk', mail: poorUser.mail }), {
   message: 'this booking required a start time',
 })
 
 // book without enough credits
-throws(
-  () =>
-    bookExperience({
-      experience: FULL_DAY,
-      mail: poorUser.mail,
-      start: Date.now(),
-    }),
-  { message: 'not enough credits' },
-)
+throws(() => book({ space: 'desk', mail: poorUser.mail, start: Date.now() }), {
+  message: 'not enough credits',
+})
 
 // expect no bookings to be created so far
 eq(db.allBookings().length, 0)
 
 // book a full day
-eq(bookExperience({ experience: FULL_DAY, mail: richUser.mail, start }), {
+eq(book({ space: 'desk', mail: richUser.mail, start }), {
   booking: 1,
   credit: 200,
   message: 'booked',
@@ -53,7 +47,7 @@ eq(bookExperience({ experience: FULL_DAY, mail: richUser.mail, start }), {
 eq(richUser.balance, 3800)
 
 // re-book a day already booked
-eq(bookExperience({ experience: FULL_DAY, mail: richUser.mail, start }), {
+eq(book({ space: 'desk', mail: richUser.mail, start }), {
   booking: 1,
   credit: 0,
   message: 'already booked',
@@ -69,24 +63,24 @@ eq(cancelBooking({ id: 1 }), {
 eq(richUser.balance, 4000)
 
 // re-book a day already canceled
-eq(bookExperience({ experience: FULL_DAY, mail: richUser.mail, start }), {
+eq(book({ space: 'desk', mail: richUser.mail, start }), {
   booking: 1,
   credit: 200,
   message: 'booking reopened',
 })
 eq(richUser.balance, 3800)
+const booking1 = db.getBookingById({ id: 1 }) // save for later
 
-// try different time left and confirm the refund rates
+// different time left and confirm the refund rates
 for (const { time, rate } of [
   { time: 1 * H, rate: 0.25 },
   { time: 10 * H, rate: 0.5 },
   { time: 8 * D, rate: 0.95 },
   { time: 6 * D, rate: 0.75 },
 ]) {
-  db.updateBookingTimings({ id: 1, start: start - time, at: start - 0.5 * H })
-  db.cancelBooking({ id: 1, rm: null })
+  const open = start - time
+  db.updateBookingTimings({ id: 1, open, at: open - 30 * M, rm: null })
   chargeCredit(richUser.mail, 200, 1)
-
   eq(cancelBooking({ id: 1 }), {
     booking: 1,
     credit: -200 * rate,
@@ -95,19 +89,72 @@ for (const { time, rate } of [
 }
 eq(richUser.balance, 3490)
 
-// check reopening partially refunded booking, only cost what was refunded
-eq(
-  bookExperience({
-    experience: FULL_DAY,
-    mail: richUser.mail,
-    start: start - 6 * D,
-  }),
-  {
-    booking: 1,
-    credit: 150,
-    message: 'booking reopened',
-  },
-)
+// reopening partially refunded booking only cost what was refunded
+db.updateBookingTimings({ ...booking1, rm: Date.now() }) // restore saved time
+eq(book({ space: 'desk', mail: richUser.mail, start }), {
+  booking: 1,
+  credit: 150,
+  message: 'booking reopened',
+})
 eq(richUser.balance, 3340)
 
-console.log(new Date(Math.floor(Date.now() / H) * H))
+// book a closed booking
+throws(() => book({ space: 'desk', mail: richUser.mail, start: start - D }), {
+  message: 'booking already closed',
+})
+
+// book a room
+eq(book({ space: 'room', mail: richUser.mail, start, duration: 2 * H }), {
+  booking: 2,
+  credit: 55,
+  message: 'booked',
+})
+
+// overlapping including booking
+eq(book({ space: 'room', mail: richUser.mail, start, duration: 1 * H }), {
+  booking: 2,
+  credit: 0,
+  message: 'already booked',
+})
+
+eq(
+  book({ space: 'room', mail: richUser.mail, start: start + H, duration: H }),
+  { booking: 2, credit: 0, message: 'already booked' },
+)
+
+// overlapping error
+throws(
+  () =>
+    book({
+      space: 'room',
+      mail: richUser.mail,
+      start: start + H,
+      duration: 2 * H,
+    }),
+  { message: 'you have an overlapping booking' },
+)
+
+// overlapping excluding (before) booking
+eq(
+  book({
+    space: 'room',
+    mail: richUser.mail,
+    start: start + 2 * H,
+    duration: H,
+  }),
+  { booking: 3, credit: 75, message: 'booked' },
+)
+
+eq(
+  book({
+    space: 'room',
+    mail: richUser.mail,
+    start: start + 2 * H,
+    duration: 2 * H,
+  }),
+  { booking: 4, credit: 40, message: 'booked' },
+)
+eq(typeof db.getBookingById({ id: 3 }).rm, 'number')
+
+// overlapping excluding (after) booking
+// book the touching previous hour

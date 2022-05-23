@@ -5,10 +5,10 @@ import { once } from 'events'
 import { join, dirname } from 'path'
 
 import db from './sqlite.js'
+import { H } from './util.js'
 import { users } from './user.js'
-import { domains } from './domain.js'
-import { sendLink } from './mailjet.js'
 import { encode } from './crypto.js'
+import { sendLink } from './mailjet.js'
 import { authentify, createSessionFromToken } from './session.js'
 
 const PORT = process.env.PORT || 8666
@@ -85,11 +85,6 @@ const server = createServer(async (request, response) => {
 })
 
 // Upgrade websocket connexions
-const formatDomain = name => {
-  const { status, ssl, org } = domains[name]
-  return { name, org: org.name, ssl, status }
-}
-
 const wss = new WebSocketServer({ noServer: true })
 server.on('upgrade', (request, socket, head) =>
   wss.handleUpgrade(request, socket, head, async ws => {
@@ -111,15 +106,7 @@ server.on('upgrade', (request, socket, head) =>
         }
       })
 
-      // send initial connection params (org & domains)
-      const orgDomains =
-        user.org.name === '01'
-          ? Object.keys(domains).map(formatDomain)
-          : user.org.domains.map(formatDomain)
-
-      ws.send(
-        JSON.stringify(['domain', { org: user.org.name, domains: orgDomains }]),
-      )
+      ws.send(JSON.stringify(['auth', { org: user.org.name }]))
     } catch (err) {
       ws.send(JSON.stringify(['auth', err.message]))
       while (true) {
@@ -127,11 +114,11 @@ server.on('upgrade', (request, socket, head) =>
         const [message] = await once(ws, 'message')
         const mail = message.toString('utf8')
         // when mail is know
-        if (!users[mail]) continue
+        if (!users.has(mail)) continue
 
         // send mail with url link
         console.log('generate session for user')
-        const exp = Date.now() + 60 * 60 * 1000 // expire in 1h
+        const exp = Date.now() + H // expire in 1h
         const token = encode({ exp, mail })
 
         // wait for link to be click

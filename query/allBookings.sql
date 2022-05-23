@@ -1,2 +1,1 @@
-SELECT *
-FROM booking
+SELECT * FROM booking

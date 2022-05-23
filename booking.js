@@ -1,48 +1,9 @@
 import db from './sqlite.js'
 import { H, M, D, nearestHour, nearestDay } from './util.js'
-import { specialExperiences, experiences } from './experience.js'
-import { chargeCredit, grantCredit } from './credit.js'
-
-const makeDayHandler = experience => {
-  const checkStart = start => {
-    if (!start) throw Error('this booking required a start time')
-    const startDay = nearestDay(start) + experience.open
-    const hour = (startDay % D) / H
-    console.log({ startDay, experience, hour })
-    // if (hour < 8 && hour >)
-    return startDay
-  }
-  // check if free:
-
-  // what differs:
-  // - how to calculate availability
-  // - get cost
-  // - 
-  return { checkStart }
-}
-
-const makeMeetingRoomHandler = experience => {
-  // rules of the booking the meeting room:
-  // - if it's current time = 50% + pro rata of time left
-  // - if it's less than 1h before = 50% price
-  // - if it's less than 1d before = 75% of the price
-  // - otherwhise full price
-  return { checkStart() {} }
-}
+import { chargeCredit, grantCredit, canCharge } from './credit.js'
+import { spaces } from './space.js'
 
 const success = (message, booking, credit = 0) => ({ credit, booking, message })
-
-const bookers = new Map(
-  Object.entries(specialExperiences).map(([k, experience]) => [
-    experience.id,
-    experience.capacity === 1
-      ? makeMeetingRoomHandler(experience)
-      : makeDayHandler(experience),
-  ]),
-)
-const defaultBooker = {
-  checkStart: () => null,
-}
 
 const getRefundRate = timeLeft => {
   if (timeLeft < 1 * H) return 0.0
@@ -52,16 +13,16 @@ const getRefundRate = timeLeft => {
   return 0.95
 }
 
-const getCapacity = experience =>
-  experience.capacity - db.getBookingCount({ for: experience.id }).count
+const getCapacity = booking =>
+  spaces[booking.space].max - db.getBookingCount(booking).count
 
 const reOpenBooking = booking => {
   // ensure booking already canceled
   if (!booking.rm) return success('already booked', booking.id)
 
   // make sure the experience is not full
-  const experience = experiences.get(booking.for)
-  if (getCapacity(experience) >= 0) throw Error('no bookings left')
+  const capacity = getCapacity(booking)
+  if (capacity >= 0) throw Error('no bookings left')
   db.cancelBooking({ id: booking.id, rm: null })
 
   // only charge back if was refunded
@@ -71,33 +32,53 @@ const reOpenBooking = booking => {
   return success('booking reopened', booking.id, Math.abs(credit?.amount || 0))
 }
 
-export const bookExperience = ({ experience, mail, start }) => {
-  const booker = bookers.get(experience.id) || defaultBooker
-  start = booker.checkStart(start)
+export const book = ({ space, mail, start, duration }) => {
+  if (!start) throw Error('this booking required a start time')
+  const def = spaces[space]
+  if (!def) throw Error(`space [${space}] not found`)
+  const { open, close, cost } = def.getDetails(start, mail, duration)
+  const now = Date.now()
+
+  // if already closed
+  if (close < now) throw Error('booking already closed')
 
   // check if booking already exist
-  const query = { mail, for: experience.id, start }
+  const booking = { mail, space, open, close, at: now }
 
   // if we already have a booking cancel, we re-use it
-  const previousBooking = db.getMatchingBooking(query)
+  const previousBooking = db.getMatchingBooking(booking)
   if (previousBooking) return reOpenBooking(previousBooking)
-  // charge for the cost of the experience
-  const capacity = getCapacity(experience)
-  if (capacity >= 0) throw Error('no bookings left')
 
-  const id = db.createBooking({ ...query, at: Date.now() }).lastInsertRowid
-  if (capacity) {
-    // early bird price:
-    // - less than 1/4 of the capacity and more than 7days before
+  // check if we have an overlapping booking (same space, overlaping time)
+  const overlapping = db.getOverlappingBooking(booking)
+  if (overlapping) {
+    // check if the booking already include this booking
+    if (close <= overlapping.close && open >= overlapping.open) {
+      return success('already booked', overlapping.id)
+    }
+
+    // fail if we are not extending the overlapping booking
+    // ex: a room booking from 8h-10h overlapping with 9h-11h booking
+    if (close < overlapping.close || open > overlapping.open) {
+      throw Error('you have an overlapping booking')
+    }
   }
-  try {
-    chargeCredit(mail, experience.cost, id)
-  } catch (err) {
-    // if fail to charge, remove the booking
-    db.deleteBooking({ id })
-    throw err
-  }
-  return success('booked', id, experience.cost)
+
+  // we must have some capacity left
+  const capacity = getCapacity(booking)
+  if (capacity > 0) throw Error('no bookings left')
+
+  const alreadySpend = Math.min(overlapping?.cost || 0, 0)
+  const finalCost = Math.max(cost + alreadySpend, 0)
+  canCharge(mail, finalCost) // throw if not possible
+
+  // cancel booking being extended
+  overlapping && db.cancelBooking({ id: overlapping.id, rm: now })
+
+  // create the booking and charge for the cost of the experience
+  const id = db.createBooking(booking).lastInsertRowid
+  chargeCredit(mail, finalCost, id)
+  return success('booked', id, finalCost)
 }
 
 export const cancelBooking = ({ id }) => {
@@ -120,8 +101,7 @@ export const cancelBooking = ({ id }) => {
   }
 
   // check the time until the experience
-  const timeLeft = now - (booking.start || experiences.get(booking.for).open)
-  const refundRate = getRefundRate(timeLeft)
+  const refundRate = getRefundRate(now - booking.open)
   const refundAmount = Math.round(refundRate * chargedAmmout)
   if (!refundAmount) return success('canceled too late for refund')
   grantCredit(booking.mail, refundAmount, id)
