@@ -70,7 +70,7 @@ Object.assign(window, {
   --c0: #014;
   --hl: #fa2;
   --min: 480px;
-  --max: 1080px;
+  --max: calc(min(100%, 1080px));
   --slant: calc(min(2.8vw, 30px));
   --rlant: calc(100% - var(--slant));
 }
@@ -81,6 +81,8 @@ Object.assign(window, {
   box-sizing: border-box;
   margin: 0;
 }
+
+p { margin: 1em 0 }
 html, body { height: 100% }
 body {
   font-size: 1.2em;
@@ -175,11 +177,10 @@ header a { display: inline-flex }
 /* SECTION OVERVIEW RULES */
 #overview {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 216px 216px 216px 1fr;
+  grid-template-rows: 280px 280px 280px 280px;
   grid-column-gap: 0px;
   grid-row-gap: 0px;
-  min-width: var(--min);
   max-width: var(--max);
   margin: 0 auto;
 }
@@ -249,6 +250,7 @@ header a { display: inline-flex }
   border: 3px solid var(--c1);
   border-radius: 12px;
 }
+#overview h3 { margin-top: 1em; }
 #overview input[type="radio"]:focus+label dt { border-color: var(--c4) }
 #overview input[type="radio"]:active+label { border-color: var(--c3) }
 #overview input[type="radio"]:checked+label { border-color: var(--c5) }
@@ -258,19 +260,30 @@ header a { display: inline-flex }
   grid-template-columns: repeat(3, 1fr);
   grid-column-gap: 12px;
   border: 0;
+  padding: 0;
 }
 
-@media only screen and (max-width: 800px)  {
+@media only screen and (max-width: 660px)  {
+  #overview > form > fieldset {
+    grid-column-gap: 2.9vw;
+  }
+  #overview > form {
+    font-size: 2.9vw;
+    padding: 2.9vw;
+  }
   #overview {
-    grid-template-columns: 1fr 3fr 3fr 3fr 1fr;
+    grid-template-columns: 0fr 1fr 1fr 1fr 0fr;
   }
 }
 
 /* FOOTER RULES */
 footer {
   background-color: var(--c1);
-  padding: 18px;
+  clip-path: polygon(0 var(--slant), 100% 0%, 100% 100%, 0 100%);
+  padding: 36px;
 }
+
+
 footer, footer * {
   color: var(--c6);
 }
@@ -323,9 +336,9 @@ footer svg path { fill: var(--c6) }
     </a>
   </h1>
   <a href="#coding"><b><b>co</b></b><i><i>ding</i></i></a>
-  <a href="#experience"><b><b>exp</b></b><i><i>erience</i></i></a>
+  <a href="#colearning"><b><b>co</b></b><i><i>learning</i></i></a>
   <a href="#coworking"><b><b>co</b></b><i><i>working</i></i></a>
-  <a href="#colearnig"><b><b>co</b></b><i><i>learning</i></i></a>
+  <a href="#experiences"><b><b>exp</b></b><i><i>eriences</i></i></a>
 </header>
 <section id="overview">
   <div id="space">
@@ -347,15 +360,18 @@ footer svg path { fill: var(--c6) }
         <dl><dt>4000&nbsp;credits</dt><dd>200€</dd></dl>
       </label>
     </fieldset>
-    <h3>flexible credits system:</h3>
+    <h3>fair credits system:</h3>
     <p>
-      Only pay for what you use<span class="description"></span>:
-      <br>- <b><span class="count">1</span> day </b>(<span class="cost">200 credits</span> each)
-      <br>- <b><span class="count">1</span> happy hour price 18h to 22h </b>(<span class="cost">80 credits</span> each)
-      <br>- <b><span class="count">1</span> print </b>(<span class="cost">2 credits</span> each)
+      Unlike classic coworks that forces you to pay a subscription,
+      DEVAZUKA is <b>flexible</b>. Never pay for what you don't use !
+    </p>
+    <p>
+      <span class="description"></span>
+      <br>- <b><span class="count">1</span> day(s), as early as 8h</b>(<span class="cost">200 credits</span> each)
+      <br>- <b><span class="count">1</span> happy hours, 18h to 22h </b>(<span class="cost">80 credits</span> each)
+      <br>- <b><span class="count">1</span> prints </b>(<span class="cost">2 credits</span> each)
       <br>- <b><span class="count">1</span>h private sound proof booth </b>(<span class="cost">40 credits</span> each)
-      <br>- free coffee
-      <br>- free wifi
+      <br>- free coffee & fast wifi
     </p>
   </form>
   <!--
@@ -387,12 +403,18 @@ footer svg path { fill: var(--c6) }
   </div>
 </section>
 <section class="wide">
-  
-</section>
-<section>
+  <h2 id="colearning">colearning</h2>
   
 </section>
 <section class="wide">
+  <h2 id="coworking">coworking</h2>
+  
+</section>
+<section class="wide">
+  <h2 id="experiences">experiences</h2>
+  
+</section>
+<section>
   
 </section>
 <footer class="wide">
@@ -403,24 +425,30 @@ footer svg path { fill: var(--c6) }
   </ul>
 </footer>
 <script type="text/javascript">
+
 // price descriptions
 const discounts = { 200: 0, 1000: 0.25, 4000: 0.5 }
 const priceDescription = $('#overview .description')
 const counts = $$('#overview .count')
 const costs = $$('#overview .cost').map((span, i) => [Number(span.textContent.split(' ')[0]), span, counts[i]])
-const updatePriceDescription = value => {
-  const amount = Number(value)
-  const discount = discounts[value]
-  priceDescription.textContent = `, with ${value} credits you can get up to`
+const updatePriceDescription = ({ target: input }) => {
+  const amount = Number(input.value)
+  input.checked = true
+  localStorage.price = amount
+  const discount = discounts[amount]
+  priceDescription.textContent = `Example, with ${amount} credits you get:`
   for (const [credits, span, count] of costs) {
     count.textContent = amount / credits
     const price = (credits - (discount * credits))/10
     span.textContent = `${Number.isInteger(price) ? price : price.toFixed(2)}€`
   }
 }
-for (const input of $$`#overview input[name="pass"]`) {
-  input.addEventListener('input', () => updatePriceDescription(input.value))
+const selected = localStorage.price || '4000'
+for (const target of $$`#overview input[name="pass"]`) {
+  target.value === selected && updatePriceDescription({ target })
+  target.addEventListener('input', updatePriceDescription)
 }
+
 
 
 </script>
