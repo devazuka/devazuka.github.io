@@ -27,10 +27,19 @@
   <script type="text/javascript">
 const add = (a, b) => a + b
 const TAG = fn => (inputs, ...args) => fn(args.reduce(add, inputs))
+const poly = children => children[0]?.prototype === Object
+  ? { props: children[0], children: children.slice(1) }
+  : { children }
 
 Object.assign(window, {
   $$: TAG((q) => [...document.querySelectorAll(q)]),
   $: TAG(document.querySelector.bind(document)),
+  h: new Proxy({}, { get: (cache, tag) => cache[tag] || (cache[tag] = (...args) => {
+    const { props, children } = poly(args)
+    const elem = Object.assign(document.createElement(tag), props)
+    children.length && elem.append(...children)
+    return elem
+  })})
 })
   </script>
   <style type="text/css">
