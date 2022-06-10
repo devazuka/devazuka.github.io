@@ -24,6 +24,15 @@
   <meta property="twitter:image" content="https://devazuka.com/thumb.jpg">
 
   <title>DEVAZUKA</title>
+  <script type="text/javascript">
+const add = (a, b) => a + b
+const TAG = fn => (inputs, ...args) => fn(args.reduce(add, inputs))
+
+Object.assign(window, {
+  $$: TAG((q) => [...document.querySelectorAll(q)]),
+  $: TAG(document.querySelector.bind(document)),
+})
+  </script>
   <style type="text/css">
 /* GLOBAL RULES */
 @font-face {
@@ -50,6 +59,7 @@
   --c2: #556082;
   --c1: #2b3963;
   --c0: #014;
+  --hl: #fa2;
   --min: 480px;
   --max: 1080px;
   --slant: calc(min(2.8vw, 30px));
@@ -165,6 +175,12 @@ header a { display: inline-flex }
   margin: 0 auto;
 }
 
+#overview > div#space > div{
+  color: white;
+  font-size: calc(min(7vw, 64px));
+  text-shadow: 2px 2px 1px var(--c0), 0px 0px 10px var(--c0);
+  padding-top: 60px;
+}
 #overview > div#space {
   top: 0;
   width: 100%;
@@ -174,6 +190,9 @@ header a { display: inline-flex }
   background-position: center bottom;
   grid-area: 1 / 1 / 4 / 6;
   clip-path: polygon(0 var(--slant), 100% 0%, 100% var(--rlant), 0 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 #overview > form {
   color: var(--c6);
@@ -184,6 +203,7 @@ header a { display: inline-flex }
 }
 
 #overview > form > fieldset > label dd { font-weight: 900 }
+#overview > form > fieldset > label dt { border-bottom: 1px solid transparent }
 #overview > form > fieldset > label dl {
   text-align: center;
   display: block;
@@ -193,15 +213,34 @@ header a { display: inline-flex }
   background-image: linear-gradient(var(--c1), var(--c2));
   border: 3px solid var(--c2);
 }
+
+#overview > form > fieldset > label.promo-25::after { content: '-25%' }
+#overview > form > fieldset > label.promo-50::after { content: '-50%' }
+#overview > form > fieldset > label.promo-25::after,
+#overview > form > fieldset > label.promo-50::after {
+  display: block;
+  position: absolute;
+  bottom: 5px;
+  transform: rotate(-45deg);
+  right: -10px;
+  padding: 2px 8px;
+  background: var(--hl);
+  color: var(--c0);
+  font-weight: bolder;
+  border-radius: 4px;
+  z-index: 100;
+  box-shadow: -2px -2px 8px var(--c0);
+}
 #overview > form > fieldset > label {
   display: flex;
   padding: 1em;
+  position: relative;
   color: var(--c6);
   background-image: linear-gradient(var(--c1), var(--c0));
   border: 3px solid var(--c1);
   border-radius: 12px;
 }
-#overview input[type="radio"]:focus+label { text-decoration: underline }
+#overview input[type="radio"]:focus+label dt { border-color: var(--c4) }
 #overview input[type="radio"]:active+label { border-color: var(--c3) }
 #overview input[type="radio"]:checked+label { border-color: var(--c5) }
 #overview > form > fieldset {
@@ -281,24 +320,34 @@ footer svg path { fill: var(--c6) }
 </header>
 <section id="overview">
   <div id="space">
-    
+    <div>Your place to code</div>
   </div>
   <form>
     <h2>access</h2>
     <fieldset>
-      <input id="day" type="radio" name="pass" class="sr-only">
+      <input id="day" type="radio" name="pass" value=200 class="sr-only">
       <label for="day">
-        <dl><dt>1&nbsp;day</dt><dd>15€</dd></dl>
+        <dl><dt>200&nbsp;credits</dt><dd>20€</dd></dl>
       </label>
-      <input id="week" type="radio" name="pass" class="sr-only">
-      <label for="week">
-        <dl><dt>7&nbsp;days</dt><dd>65€</dd></dl>
+      <input id="week" type="radio" name="pass" value=1000 class="sr-only">
+      <label for="week" class="promo-25">
+        <dl><dt>1000&nbsp;credits</dt><dd>75€</dd></dl>
       </label>
-      <input id="month" type="radio" name="pass" class="sr-only">
-      <label for="month">
-        <dl><dt>30&nbsp;days</dt><dd>175€</dd></dl>
+      <input id="month" type="radio" name="pass" value=4000 class="sr-only">
+      <label for="month" class="promo-50">
+        <dl><dt>4000&nbsp;credits</dt><dd>200€</dd></dl>
       </label>
     </fieldset>
+    <h3>flexible credits system:</h3>
+    <p>
+      Only pay for what you use<span class="description"></span>:
+      <br>- <b><span class="count">1</span> day </b>(<span class="cost">200 credits</span> each)
+      <br>- <b><span class="count">1</span> happy hour price 18h to 22h </b>(<span class="cost">80 credits</span> each)
+      <br>- <b><span class="count">1</span> print </b>(<span class="cost">2 credits</span> each)
+      <br>- <b><span class="count">1</span>h private sound proof booth </b>(<span class="cost">40 credits</span> each)
+      <br>- free coffee
+      <br>- free wifi
+    </p>
   </form>
   <!--
   A space to
@@ -344,5 +393,27 @@ footer svg path { fill: var(--c6) }
     <li><a href="https://github.com/devazuka/" title="Github"><svg aria-hidden=true focusable=false xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M12 2C6.475 2 2 6.475 2 12a9.994 9.994 0 0 0 6.838 9.488c.5.087.687-.213.687-.476 0-.237-.013-1.024-.013-1.862-2.512.463-3.162-.612-3.362-1.175-.113-.288-.6-1.175-1.025-1.413-.35-.187-.85-.65-.013-.662.788-.013 1.35.725 1.538 1.025.9 1.512 2.338 1.087 2.912.825.088-.65.35-1.087.638-1.337-2.225-.25-4.55-1.113-4.55-4.938 0-1.088.387-1.987 1.025-2.688-.1-.25-.45-1.275.1-2.65 0 0 .837-.262 2.75 1.026a9.28 9.28 0 0 1 2.5-.338c.85 0 1.7.112 2.5.337 1.912-1.3 2.75-1.024 2.75-1.024.55 1.375.2 2.4.1 2.65.637.7 1.025 1.587 1.025 2.687 0 3.838-2.337 4.688-4.562 4.938.362.312.675.912.675 1.85 0 1.337-.013 2.412-.013 2.75 0 .262.188.574.688.474A10.016 10.016 0 0 0 22 12c0-5.525-4.475-10-10-10z"/></svg><span class="sr-only">Github</span></a></li>
   </ul>
 </footer>
+<script type="text/javascript">
+// price descriptions
+const discounts = { 200: 0, 1000: 0.25, 4000: 0.5 }
+const priceDescription = $('#overview .description')
+const counts = $$('#overview .count')
+const costs = $$('#overview .cost').map((span, i) => [Number(span.textContent.split(' ')[0]), span, counts[i]])
+const updatePriceDescription = value => {
+  const amount = Number(value)
+  const discount = discounts[value]
+  priceDescription.textContent = `, with ${value} credits you can get up to`
+  for (const [credits, span, count] of costs) {
+    count.textContent = amount / credits
+    const price = (credits - (discount * credits))/10
+    span.textContent = `${Number.isInteger(price) ? price : price.toFixed(2)}€`
+  }
+}
+for (const input of $$`#overview input[name="pass"]`) {
+  input.addEventListener('input', () => updatePriceDescription(input.value))
+}
+
+
+</script>
 </body>
 </html>
