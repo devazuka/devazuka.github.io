@@ -185,12 +185,6 @@ header a { display: inline-flex }
   margin: 0 auto;
 }
 
-#overview > div#space > div > div {
-  position: relative;
-  line-height: 0.55em;
-  z-index: 3;
-}
-
 #overview > div#space > div {
   color: white;
   font-size: calc(min(7vw, 64px));
@@ -198,17 +192,28 @@ header a { display: inline-flex }
   padding-top: 60px;
 }
 
-#overview > div#space > div > div.shadow {
+#overview > div#space > div > div {
   mix-blend-mode: screen;
+  position: relative;
+  line-height: 0.55em;
+  z-index: 4;
+}
+
+#overview > div#space > div > div:nth-child(2) {
   padding-left: 0.2em;
   color: var(--c4);
+  z-index: 3;
+}
+
+#overview > div#space > div > div:nth-child(3) {
+  padding-left: 0.4em;
+  color: var(--c2);
   z-index: 2;
 }
 
-
-#overview > div#space > div > div.shadow.deep {
-  padding-left: 0.4em;
-  color: var(--c2);
+#overview > div#space > div > div:nth-child(4) {
+  padding-left: 0.6em;
+  color: var(--c0);
   z-index: 1;
 }
 
@@ -362,8 +367,9 @@ footer svg path { fill: var(--c6) }
   <div id="space">
     <div>
       <div data-speed=0.5>Your place to code</div>
-      <div data-speed=1 class=" shadow">Your place to work</div>
-      <div data-speed=1.5 class=" shadow deep">Your place to learn</div>
+      <div data-speed=1.0>Your place to work</div>
+      <div data-speed=1.5>Your place to learn</div>
+      <div data-speed=2.0>Your place to meet</div>
     </div>
   </div>
   <form data-speed=-0.5>
