@@ -185,12 +185,33 @@ header a { display: inline-flex }
   margin: 0 auto;
 }
 
-#overview > div#space > div{
+#overview > div#space > div > div {
+  position: relative;
+  line-height: 0.55em;
+  z-index: 3;
+}
+
+#overview > div#space > div {
   color: white;
   font-size: calc(min(7vw, 64px));
-  text-shadow: 2px 2px 1px var(--c0), 0px 0px 10px var(--c0);
+  font-weight: bolder;
   padding-top: 60px;
 }
+
+#overview > div#space > div > div.shadow {
+  mix-blend-mode: screen;
+  padding-left: 0.2em;
+  color: var(--c4);
+  z-index: 2;
+}
+
+
+#overview > div#space > div > div.shadow.deep {
+  padding-left: 0.4em;
+  color: var(--c2);
+  z-index: 1;
+}
+
 #overview > div#space {
   top: 0;
   width: 100%;
@@ -231,7 +252,7 @@ header a { display: inline-flex }
   display: block;
   position: absolute;
   bottom: 5px;
-  transform: rotate(-45deg);
+  transform: rotate(-15deg);
   right: -10px;
   padding: 2px 8px;
   background: var(--hl);
@@ -342,9 +363,13 @@ footer svg path { fill: var(--c6) }
 </header>
 <section id="overview">
   <div id="space">
-    <div>Your place to code</div>
+    <div>
+      <div data-speed=0.5>Your place to code</div>
+      <div data-speed=1 class=" shadow">Your place to work</div>
+      <div data-speed=1.5 class=" shadow deep">Your place to learn</div>
+    </div>
   </div>
-  <form>
+  <form data-speed=-0.5>
     <h2>access</h2>
     <fieldset>
       <input id="day" type="radio" name="pass" value=200 class="sr-only">
@@ -387,23 +412,42 @@ footer svg path { fill: var(--c6) }
 <section class="wide">
   <h2 id="coding">coding</h2>
   <div>
-    
+    <p>
+      Coding is nice, I like it, maybe you will like it too
+    </p>
   </div>
   <h3 id="what-is-code">What is code</h3>
   <div>
-    
+    <p>
+      Coding is programing
+    </p>
   </div>
   <h3 id="why-learn-it">Why learn it</h3>
   <div>
-    
+    <p>
+      Because it pays loads of money and it's fun
+    </p>
   </div>
   <h3 id="everyone-try-it">Everyone can try it</h3>
   <div>
-    
+    <p>
+      Even if you don't think coding is for you, guess what, neither did we !
+    </p>
   </div>
 </section>
 <section class="wide">
   <h2 id="colearning">colearning</h2>
+  <div>
+    <p>
+      Even if you don't think coding is for you, guess what, neither did we !
+    </p>
+  </div>
+  <h3 id="everyone-try-it">Everyone can try it</h3>
+  <div>
+    <p>
+      Even if you don't think coding is for you, guess what, neither did we !
+    </p>
+  </div>
   
 </section>
 <section class="wide">
@@ -450,6 +494,41 @@ for (const target of $$`#overview input[name="pass"]`) {
 }
 
 
+// super dumb paralax
+let _rid, _Y, _W
+const queue = fn => {
+  const handler = () => (_rid = undefined, fn())
+  return () => { _rid || (_rid = requestAnimationFrame(handler)) }
+}
+
+const paralaxElems = $$('[data-speed]').map(elem => ({
+  elem,
+  speed: Number(elem.dataset.speed) || 1,
+}))
+
+
+const updateParalax = () => {
+  if (_Y === window.scrollY) return
+  _Y = window.scrollY
+  const wy = _W + _Y
+  for (const { speed, elem, y } of paralaxElems) {
+    const diff = (wy - y) * speed
+    elem.style.transform = `translate(0, ${diff / 10}px)`
+  }
+}
+
+const updatePositions = () => {
+  _W = window.innerHeight / 2
+  for (const p of paralaxElems) {
+    const { y, height } = p.elem.getBoundingClientRect()
+    p.y = window.scrollY + y + height / 2
+  }
+  updateParalax()
+}
+
+updatePositions()
+window.addEventListener('resize', queue(updatePositions), false)
+window.addEventListener('scroll', queue(updateParalax), false)
 
 </script>
 </body>
