@@ -245,10 +245,7 @@ header a { display: inline-flex }
   border: 3px solid var(--c2);
 }
 
-#overview > form > fieldset > label.promo-25::after { content: '-25%' }
-#overview > form > fieldset > label.promo-50::after { content: '-50%' }
-#overview > form > fieldset > label.promo-25::after,
-#overview > form > fieldset > label.promo-50::after {
+#overview > form > fieldset > label.promo > div {
   display: block;
   position: absolute;
   bottom: 5px;
@@ -377,11 +374,13 @@ footer svg path { fill: var(--c6) }
         <dl><dt>200&nbsp;credits</dt><dd>20€</dd></dl>
       </label>
       <input id="week" type="radio" name="pass" value=1000 class="sr-only">
-      <label for="week" class="promo-25">
+      <label for="week" class="promo">
+        <div>-25%</div>
         <dl><dt>1000&nbsp;credits</dt><dd>75€</dd></dl>
       </label>
       <input id="month" type="radio" name="pass" value=4000 class="sr-only">
-      <label for="month" class="promo-50">
+      <label for="month" class="promo">
+        <div>-50%</div>
         <dl><dt>4000&nbsp;credits</dt><dd>200€</dd></dl>
       </label>
     </fieldset>
