@@ -527,25 +527,54 @@ const paralaxElems = $$('[data-speed]').map(elem => ({
 const updateParalax = () => {
   if (_Y === window.scrollY) return
   _Y = window.scrollY
-  const wy = _W + _Y
-  for (const { speed, elem, y } of paralaxElems) {
-    const diff = (wy - y) * speed
+  const height = window.innerHeight
+  const top = _Y
+  const mid = (height / 2) + _Y
+  const bot = _Y + height
+  for (const { speed, elem, y, h } of paralaxElems) {
+    const diff = (top - y) * speed
     elem.style.transform = `translate(0, ${diff / 10}px)`
   }
 }
 
 const updatePositions = () => {
-  _W = window.innerHeight / 2
   for (const p of paralaxElems) {
     const { y, height } = p.elem.getBoundingClientRect()
-    p.y = window.scrollY + y + height / 2
+    p.y = window.scrollY + y
+    p.h = height
   }
   updateParalax()
 }
 
-updatePositions()
+setTimeout(updatePositions)
 window.addEventListener('resize', queue(updatePositions), false)
 window.addEventListener('scroll', queue(updateParalax), false)
+
+
+// hot reload LOL
+let prev
+const clear = () => {
+  // should unhook events somehow
+}
+const parseDOM = DOMParser.prototype.parseFromString.bind(new DOMParser())
+const replace = (dom, selector) => {
+  const { innerHTML } = dom.querySelector(selector)
+  const prev = document.querySelector(selector)
+  const change = prev.innerHTML !== innerHTML
+  change && (prev.innerHTML = innerHTML)
+  return change
+}
+setInterval(async () => {
+  const res = await fetch('')
+  const body = await res.text()
+  if (!prev) return prev = body
+  if (prev === body) return
+  prev = body
+  const dom = parseDOM(body, 'text/html')
+  replace(dom, 'head')
+  replace(dom, 'body')
+  replace(dom, 'script') || clear()
+}, 250)
 
 </script>
 </body>
