@@ -43,7 +43,7 @@ Object.assign(window, {
 })
   </script>
   <style type="text/css">
-/* GLOBAL RULES */
+/* GLOBAL */
 @font-face {
   font-family: 'Roboto Mono';
   font-style: normal;
@@ -109,7 +109,6 @@ h2:before {
   user-select: none;
 } 
 
-
 /* ATOMS */
 .bold { font-weight: bolder }
 .wide {
@@ -130,7 +129,7 @@ h2:before {
 }
 
 
-/* ACCESSIBILITY RULES */
+/* ACCESSIBILITY */
 /* visualy hide an element but let the reader find it */
 .sr-only {
   border: 0!important;
@@ -146,14 +145,12 @@ h2:before {
   white-space: nowrap!important;
 }
 
-/* HEADER RULES */
+/* HEADER */
 h1 {
   position: relative;
   display: inline-block;
 }
-
 h3 { margin-top: 2em }
-
 h1 svg { margin: 0 12px }
 header {
   margin: 0 auto;
@@ -176,6 +173,11 @@ header a > i, header a > b {
   transform: skewX(-16deg);
   display: inline-block;
 }
+form button {
+  color: var(--c0);
+  font-weight: bold;
+  background-color: var(--c6);
+}
 header a > i > i { color: var(--c0); font-weight: 200 }
 header a > b > b { color: var(--c6) }
 header a > b { background-color: var(--c0) }
@@ -195,7 +197,7 @@ header a { display: inline-flex }
   header > a { display: none }
 }
 
-/* SECTION OVERVIEW RULES */
+/* OVERVIEW SECTION */
 #overview {
   max-width: var(--max);
   margin: 0 auto;
@@ -259,6 +261,27 @@ header a { display: inline-flex }
   clip-path: polygon(0 0, 100% var(--slant), 100% 100%, 0 var(--rlant));
 }
 
+/* OVERVIEW BOOK */
+#overview > form.book {
+
+}
+
+/* OVERVIEW BOOKING */
+#overview > form.booking {
+
+}
+
+
+/* OVERVIEW CONNECT (sign-up / log-in) */
+#overview > form.connect {
+
+}
+
+/* OVERVIEW BUY CREDIT */
+#overview > form.buy {
+
+}
+
 #overview > form > fieldset > label dd { font-weight: 900 }
 #overview > form > fieldset > label dt { border-bottom: 1px solid transparent }
 #overview > form > fieldset > label dl {
@@ -294,7 +317,7 @@ header a { display: inline-flex }
   border: 3px solid var(--c1);
   border-radius: 12px;
 }
-#overview h3 { margin-top: 1em; }
+#overview h3 { margin-top: 1em }
 #overview input[type="radio"]:focus+label dt { border-color: var(--c4) }
 #overview input[type="radio"]:active+label { border-color: var(--c3) }
 #overview input[type="radio"]:checked+label { border-color: var(--c5) }
@@ -306,7 +329,6 @@ header a { display: inline-flex }
   border: 0;
   padding: 0;
 }
-
 @media only screen and (max-width: 1680px)  {
   #overview > form {
     margin: -80px auto 80px;
@@ -316,7 +338,6 @@ header a { display: inline-flex }
     margin-left: 0;
     height: calc(min(100vw, 640px));
   }
-
 }
 @media only screen and (max-width: 660px)  {
   #overview > form > fieldset {
@@ -332,12 +353,10 @@ header a { display: inline-flex }
 }
 
 
-/* SECTION COWORKING RULES */
+/* SECTION COWORKING */
 #coworking #map.loaded iframe { opacity: 1 }
 #coworking #map { line-height: 0 }
-#coworking #map iframe {
-  opacity: 0;
-}
+#coworking #map iframe { opacity: 0 }
 #coworking #map {
   position: relative;
   background-image: url(data:image/png;base64,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);
@@ -358,12 +377,8 @@ header a { display: inline-flex }
   backdrop-filter: blur(10px);
 }
 
-
-/* SECTION CODING RULES */
-/* SECTION COLEARNING RULES */
-#colearning h3 + blockquote {
-  font-weight: bolder;
-}
+/* SECTION COLEARNING */
+#colearning h3 + blockquote { font-weight: bolder }
 #colearning blockquote {
   border-left: 1em solid var(--c5);
   color: var(--c2);
@@ -371,26 +386,22 @@ header a { display: inline-flex }
   font-style: italic;
   margin-bottom: 2em;
 }
-
+#colearning { overflow: hidden }
 #colearning .flex {
   clear: both;
   display: flex;
   flex-wrap: wrap;
 }
-
 #colearning aside {
   transform: rotate(-2deg);
   padding: 1em;
   width: 50%;
 }
-
-
 #colearning aside#our-own-limitations {
   width: 80%;
   transform: rotate(2deg);
   margin: 0 auto 3em;
 }
-
 @media only screen and (max-width: 660px)  {
   #colearning aside, #colearning aside#our-own-limitations {
     width: 100%;
@@ -401,31 +412,22 @@ header a { display: inline-flex }
     font-size: 2.9vw;
     padding: 2.9vw;
   }
-  #overview {
-    grid-template-columns: 0fr 1fr 1fr 1fr 0fr;
-  }
 }
 
-
-/* FOOTER RULES */
+/* FOOTER */
 footer {
   background-color: var(--c1);
   clip-path: polygon(0 2.8vw, 100% 0%, 100% 100%, 0 100%);
   padding: 2.8vw 0 72px;
 }
-
-footer, footer * {
-  color: var(--c6);
-}
+footer, footer * { color: var(--c6) }
 footer ul {
   display: flex;
   margin: 0;
   padding: 0;
   justify-content: center;
 }
-footer ul li {
-  list-style: none;
-}
+footer ul li { list-style: none }
 footer a {
   display: flex;
   padding: 6px;
@@ -478,7 +480,42 @@ footer svg path { fill: var(--c6) }
       <div data-speed=2.0>Your place to meet</div>
     </div>
   </div>
-  <form data-speed=-0.5>
+  <form data-speed=-0.5 class="book">
+    <h2>book</h2>
+    <fieldset class="week">
+      <input id="mon" type="radio" name="book" value="mon" class="sr-only" />
+      <label for="mon"><b>MON</b><time>08h-22h</time></label>
+      <input id="tue" type="radio" name="book" value="tue" class="sr-only" />
+      <label for="tue"><b>TUE</b><time>08h-22h</time></label>
+      <input id="wed" type="radio" name="book" value="wed" class="sr-only" />
+      <label for="wed"><b>WED</b><time>08h-22h</time></label>
+      <input id="thu" type="radio" name="book" value="thu" class="sr-only" />
+      <label for="thu"><b>THU</b><time>08h-22h</time></label>
+      <input id="fri" type="radio" name="book" value="fri" class="sr-only" />
+      <label for="fri"><b>FRI</b><time>08h-22h</time></label>
+      <input id="sat" type="radio" name="book" value="sat" class="sr-only" />
+      <label for="sat"><b>SAT</b><time>10h-18h</time></label>
+      <input id="sun" type="radio" name="book" value="sun" class="sr-only" />
+      <label for="sun"><b>SUN</b><time>10h-18h</time></label>
+    </fieldset>
+  </form>
+  <form data-speed=-0.5 class="booking">
+    <h2>your booking</h2>
+    <!-- date / time / cost -->
+    <!-- Display QR code -->
+    <button name="booth">book booth</button>
+    <button name="cancel">Cancel booking</button>
+  </form>
+  <form data-speed=-0.5 class="connect">
+    <h2>connect</h2>
+    <label>email: <input type="email" name="email"></label>
+    <fieldset>
+      <button name="create">Create account</button>
+      <span>- or -</span>
+      <button name="login">Login</button>
+    </fieldset>
+  </form>
+  <form data-speed=-0.5 class="buy">
     <h2>access</h2>
     <h3>fair credits system:</h3>
     <p>
@@ -532,7 +569,7 @@ footer svg path { fill: var(--c6) }
       We pay attention to details so you will always feel welcome ☺️
     </p>
     <ul>
-      <li>☕ Good and free filter specialty coffee</li>
+      <li>☕ Good and free filter speciality coffee</li>
       <li>📶 Fast and reliable internet</li>
       <li>🥤 Fresh filtered water</li>
     </ul>
