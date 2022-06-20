@@ -1,5 +1,62 @@
-import { createCanvas, loadImage } from "https://deno.land/x/canvas/mod.ts";
-import { scanImageData } from "https://deno.land/x/zbar_wasm/mod.ts"
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+  <style>
+body, html, #drop {
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+.drag {
+  background: red;
+}
+  </style>
+</head>
+<body>
+<div id="drop">
+</div>
+<script type="module">
+import { decode } from "./zbar.js"
+const dropZone = document.getElementById('drop')
+
+dropZone.addEventListener('dragover', e => e.preventDefault())
+dropZone.addEventListener('dragenter', e => {
+  e.preventDefault()
+  dropZone.classList.add('drag')
+})
+dropZone.addEventListener('dragleave', e => dropZone.classList.remove('drag'))
+
+dropZone.addEventListener('drop', e => {
+  e.preventDefault()
+  dropZone.classList.remove('drag')
+  for (const file of e.dataTransfer.files) {
+    load(file)
+  }
+})
+
+const load = async file => {
+  const canvas = document.createElement('canvas')
+  const img = new Image()
+  // img.crossOrigin = 'Anonymous'
+  img.src = URL.createObjectURL(file)
+  console.time('loading image')
+  await new Promise((s, f) => (img.onload = s, img.onerror = f))
+  console.timeEnd('loading image')
+  console.time('getting context')
+  canvas.width = img.width
+  canvas.height = img.height
+  const ctx = canvas.getContext('2d')
+  ctx.drawImage(img, 0, 0)
+  const { data, width, height } = ctx.getImageData(0, 0, img.width, img.height)
+  console.timeEnd('getting context')
+  console.time('parsing qrcode')
+  const qr = decode(data, width, height)
+  console.timeEnd('parsing qrcode')
+  console.log(qr ? parse(qr) : 'no qrcode found')
+}
 
 // http://micromix.pt/micromix_v3/Documentos/SAFT-PT/SAFT-PT_Evolu%C3%A7%C3%A3o_codigos_Doc_Fatura%C3%A7%C3%A3o.pdf
 // https://info.portaldasfinancas.gov.pt/pt/apoio_contribuinte/Documents/Comunicacao_Dados_Documentos_Transporte.pdf
@@ -76,23 +133,12 @@ const taxSpecifications = {
 const parse = data => Object.fromEntries(
   data.split('*').map(s => s.split(':')).map(([k, v]) => {
     const value = Number.isNaN(Number(v)) ? v : Number(v)
-    if (k === 'E') return [k, documentStates[value]]
-    if (k === 'D') return [k, documentTypes[value]]
-    return [k[0] in taxSpecifications ? k[1] : k, value]
+    if (k === 'E') return [keys[k], documentStates[value]]
+    if (k === 'D') return [keys[k], documentTypes[value]]
+    return [k[0] in taxSpecifications ? keys[k[1]] : (keys[k] || k), value]
   })
 )
 
-const readQRCode = async src => {
-  const img = await loadImage(src)
-  const w = img.width()
-  const h = img.height()
-  const canvas = createCanvas(w, h)
-  const ctx = canvas.getContext('2d')
-  ctx.drawImage(img, 0, 0)
-  const data = ctx.getImageData(0, 0, w, h)
-  for (const qr of await scanImageData(data)) {
-    return parse(qr.decode())
-  }
-}
-
-await readQRCode('./20220615_183805.jpg') // works with url too !
+</script>
+</body>
+</html>
