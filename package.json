@@ -12,7 +12,8 @@
 		"clean": "rm -rf .data/*db*"
 	},
 	"dependencies": {
-		"better-sqlite3": "^7.5.0",
+		"better-sqlite3": "^7.5.3",
+		"puppeteer": "^15.3.0",
 		"ws": "^8.4.2"
 	},
 	"optionalDependencies": {

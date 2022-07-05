@@ -1,1 +1,0 @@
-DELETE FROM booking WHERE id=:id

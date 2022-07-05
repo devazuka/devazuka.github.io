@@ -1,5 +1,5 @@
 SELECT count(*)
 FROM booking
-WHERE space = :space
+WHERE type = :type
   AND open <= :close
   AND close >= :open

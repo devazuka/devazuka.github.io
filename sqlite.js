@@ -4,9 +4,8 @@ import { join, dirname } from 'path'
 import sqlite3 from 'better-sqlite3'
 
 // migration dir
-const rootDir = dirname(new URL(import.meta.url).pathname)
-const queryDir = join(rootDir, 'query')
-const migrationDir = join(rootDir, 'migration')
+const queryDir = 'query'
+const migrationDir = 'migration'
 
 // init db and log verbose for debug
 const dbFile = process.env.DB_FILE || '.data/dev.db'

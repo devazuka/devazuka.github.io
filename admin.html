@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:image/svg+xml,<svg viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'><path fill='%23fff' stroke='%23888' d='M39,1L20.5,11L20.5,39L39,29Z'/><path fill='%23888' stroke='%23fff' d='M1,1L19.5,11L19.5,39L1,29Z'/></svg>">
+  <title>Admin</title>
+<style>
+/* latin */
+@font-face {
+  font-family: 'Inconsolata';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 75%;
+  src: url(https://fonts.gstatic.com/s/inconsolata/v30/QldgNThLqRwH-OJ1UHjlKENVzkWGVkL3GZQmXQLYxYWI2qfdm7Lpp4U8WR32lw.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* latin */
+@font-face {
+  font-family: 'Inconsolata';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/s/inconsolata/v30/QlddNThLqRwH-OJ1UHjlKENVzlm-WkL3GZQmAwPyya15.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+body {
+  margin: 0 auto;
+  width: fit-content;
+}
+
+body, span {
+  font-family: 'Inconsolata', monospace;
+}
+.data {
+  display: grid;
+  border-right: 1px solid black;
+  width: fit-content;
+}
+
+.data > b[data-sort=asc] {
+  background:
+    linear-gradient(45deg, transparent 25%, #70f 0), 
+    linear-gradient(-45deg, transparent 80%, #70f 0),
+    linear-gradient(to bottom, transparent 65%, #70f 65%),
+    #fff;
+}
+.data > b[data-sort=desc] {
+  color: black;
+  background:
+    linear-gradient(45deg, #f70 20%, transparent 0), 
+    linear-gradient(-45deg, #f70 75%, transparent 0),
+    linear-gradient(to top, transparent 65%, #f70 65%),
+    #000;
+}
+
+.data > span.bool:after { content: '❌' }
+.data > span.bool[data-val='true']:after { content: '✔' }
+.data > span.bool.sex:after { content: '⚧️' }
+.data > span.bool.sex[data-val='true']:after { content: '♂️' }
+.data > span.bool.sex[data-val='false']:after { content: '♀️' }
+
+.data > span, .data > b {
+  padding: 8px 4px;
+  white-space: nowrap;
+  text-align: center;
+}
+.data > span.date, .data > b.sex {
+  font-stretch: 75%;
+}
+.data > span {
+  border-left: 1px solid black;
+  border-bottom: 1px solid black;
+}
+
+.data > span.even {
+  background: rgba(0,0,0,.1);
+}
+
+.data > b:not(:first-child) {
+  border-left: 1px solid white;
+}
+.data > b {
+  background: black;
+  color: white;
+  user-select: none;
+  cursor: default;
+}
+</style>
+</head>
+<body>
+  <h1>Admin</h1>
+  <div id="users">
+    <h2>Users</h2>
+    <div class="data"></div>
+  </div>
+  <div id="bookings">
+    <h2>Bookings</h2>
+    <div class="data"></div>
+  </div>
+  <div id="workshops">
+    <h2>Workshops</h2>
+    <div class="data"></div>
+  </div>
+  <div id="registrations">
+    <h2>Registrations</h2>
+    <div class="data"></div>
+  </div>
+  <div id="sessions">
+    <h2>Sessions</h2>
+    <div class="data"></div>
+  </div>
+  <script>
+const f2 = n => n < 10 ? ('0'+n) : n
+const columnTypeDefs = {
+  date: {
+    format: ts => {
+      const d = new Date(ts)
+      const time = f2(d.getHours()) +':'+ f2(d.getMinutes()) +':'+ f2(d.getSeconds())
+      const date = f2(d.getDate()) +'/'+ f2(d.getMonth()+1) +'/'+ f2(d.getFullYear())
+      return `${date} ${time}`
+    },
+    width: '9em',
+  },
+  text: { format: s => s ?? '-',  width: 'min-content' },
+  num: { format: String,  width: 'min-content' },
+  bool: { format: () => '', width: '2em' },
+}
+
+const prepareColumn = ([name, type], index) =>
+  ({ ...columnTypeDefs[type], name, type, index })
+
+// TODO: add filter
+const makeFilter = q => new Function(['data', 'i', 'all'], `with (data) { return ${q} }`)
+const createTable = table => {
+  const div = document.querySelector(`#${table.name}s > .data`)
+
+  const columns = Object.entries(table.columns).map(prepareColumn)
+  const size = columns.length
+  div.classList.add(`column-${size}`)
+  let sorts = {}
+  for (const { name, type } of columns) {
+    const b = document.createElement('b')
+    b.classList.add(name, type)
+    b.append(name)
+    b.addEventListener('click', () => {
+      if (sorts.name !== name) {
+        sorts.b && (sorts.b.dataset.sort = '')
+        sorts.name = name
+        sorts.b = b
+      }
+      sorts.order = b.dataset.sort =
+          b.dataset.sort === 'asc' ? 'desc'
+        : b.dataset.sort === 'desc' ? ''
+        : 'asc'
+      sort()
+    })
+    div.append(b)
+  }
+
+  div.style.gridTemplateColumns = columns.map(c => c.width).join(' ')
+  let row = -1, col = -1
+  const rows = table.data
+  const maxRow = rows.length
+  const unsortedData = Array(maxRow)
+  while (++row < maxRow) {
+    const data = rows[row]
+    col = -1
+    const rowSpans = Array(size)
+    const rowData = { elems: rowSpans }
+    unsortedData[row] = rowData
+    while (++col < size) {
+      const { name, format, type } = columns[col]
+      const span = document.createElement('span')
+      const val = data[col]
+      span.classList.add(name, type)
+      span.dataset.val = val
+      span.dataset.row = row
+      span.dataset.col = col
+      span.append(format(val))
+      rowData[name] = val
+      rowSpans[col] = span
+    }
+  }
+  const show = (data) => {
+    const { length } = data
+    let row = -1
+    while (++row < maxRow) {
+      const { elems } = data[row]
+      const par = row % 2 ? 'odd' : 'even'
+      let col = -1
+      while (++col < size) {
+        const elem = elems[col]
+        elem.dataset.par = par
+        div.append(elem)
+      }
+    }
+  }
+
+  const compare = orderCompare => (adata, bdata) => {
+    const a = adata[sorts.name]
+    const b = bdata[sorts.name]
+    if (a == b) return 0
+    if (a == null) return 1
+    if (b == null) return -1
+    return orderCompare(a, b)
+  }
+
+  const compareASC = compare((a, b) => String(a).localeCompare(b))
+  const compareDESC = compare((a, b) => String(b).localeCompare(a))
+
+  const sortedData = [...unsortedData] // preserve the original order
+  const sort = () => show(sorts.name
+    ? sortedData.sort(sorts.order === 'asc' ? compareASC : compareDESC)
+    : unsortedData)
+  sort()
+}
+
+createTable({
+  name: 'user',
+  columns: { at: 'date', mail: 'text', name: 'text', tel: 'text', birth: 'date', sex: 'bool', ref: 'text', work: 'text' },
+  data: [
+    [Date.now() - Math.random()*9e11, 'clement@devazuka.com',     'Clement Denis',   '+33605625747', Date.now() - Math.random()*9e11,  true, 'Friend',    'Dev'],
+    [Date.now() - Math.random()*9e11,   'aline@devazuka.com', 'Aline Paschoalino', '00351968875135', Date.now() - Math.random()*9e11, false, 'Friend',    'Manager'],
+    [Date.now() - Math.random()*9e11, 'marcos2ouf@gmail.com',            'Marcos',             null, Date.now() - Math.random()*9e11,  null, 'Instagram', 'Dev'],
+    [Date.now() - Math.random()*9e11,  'le.mikmac@gmail.com',      'Jean Jacotot',   '+33624075567', Date.now() - Math.random()*9e11,  true, 'Friend',    'Dev'],
+  ]
+})
+
+/*
+// Connect to server
+const { connect } import './server-client.js'
+
+const { session } = localStorage
+if (!session) {
+  document.body.innerHTML = 'missing session <a href="..">sign in first</a>'
+}
+
+// Load the data
+const allData = await (await fetch('/api/all-data.json', {
+  headers: { Authorization: `token ${session}` }
+})).json()
+
+
+// Show the data
+for (const tableDef of allData) {
+  createTable(tableDef)
+}
+
+// TODO: Synchronise the data
+// const api = await connect(session)
+
+*/
+  </script>
+</body>
+</html>

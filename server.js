@@ -11,7 +11,7 @@ import { encode } from './crypto.js'
 import { sendLink } from './mailjet.js'
 import { authentify, createSessionFromToken } from './session.js'
 
-const PORT = process.env.PORT || 8666
+const PORT = process.env.PORT || 3000
 const DEV = process.env.NODE_ENV !== 'production'
 
 const { handle, handlers, cleanupSession } = await import('./api.js')
@@ -20,8 +20,6 @@ const { handle, handlers, cleanupSession } = await import('./api.js')
 const placeholders = {
   EVENTS: JSON.stringify(Object.keys(handlers)),
 }
-
-const rootDir = dirname(new URL(import.meta.url).pathname)
 
 // Pending session holds sessions waiting for the mail link to be clicked
 const pendingSessions = new Map()
@@ -37,7 +35,7 @@ const validateSession = (request, token) => {
 }
 const fileCache = {}
 const loadFile = async path => {
-  const template = await readFile(join(rootDir, path), 'utf8')
+  const template = await readFile(join('.', path), 'utf8')
   return template.replace(
     /\{\{([A-Z0-9_]+)\}\}/g,
     (_, key) => placeholders[key],

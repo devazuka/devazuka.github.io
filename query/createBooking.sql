@@ -1,4 +1,4 @@
 INSERT INTO booking
-  (at, mail, space, open, close)
+  (at, mail, type, open, close)
 VALUES
-  (:at, :mail, :space, :open, :close)
+  (:at, :mail, :type, :open, :close)

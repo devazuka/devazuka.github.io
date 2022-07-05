@@ -1,5 +1,3 @@
-import { prepare } from './sqlite.js'
-
 let _latest = 0
 const cleanners = []
 export const handlers = {}
