@@ -21,10 +21,8 @@ db.pragma('journal_mode=WAL')
 // current db version
 const { user_version } = db.prepare('pragma user_version').get()
 
-const semify = value => value.endsWith(';') || `${value};`
-const runUnsafe = query => {
-  db.exec(['BEGIN TRANSACTION;', semify(query.trim()), ';COMMIT;'].join('\n'))
-}
+const runUnsafe = query =>
+  db.exec(['BEGIN TRANSACTION;', query.trim(), ';COMMIT;'].join('\n'))
 
 // load sql migration files
 for (const migrationName of await readdir(migrationDir)) {

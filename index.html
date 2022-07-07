@@ -242,6 +242,7 @@ header a { display: inline-flex }
   max-width: var(--max);
   margin: 0 auto;
   padding: 0;
+  min-height: calc(min(100vw, 850px));
 }
 
 #overview > div#space > div {
@@ -281,7 +282,7 @@ header a { display: inline-flex }
   height: calc(min(100vw, 800px));
   margin-top: 25px;
   margin-left: 250px;
-  background-image: url(https://devazuka.com/place.jpeg);
+  background-image: url(place.jpeg);
   background-size: cover;
   background-position: center bottom;
   clip-path: polygon(0 var(--slant), 100% 0%, 100% var(--rlant), 0 100%);
@@ -308,27 +309,6 @@ header a { display: inline-flex }
   background-color: var(--c0);
   padding: 1em 1em 2em;
   clip-path: polygon(0 0, 100% var(--slant), 100% 100%, 0 var(--rlant));
-}
-
-/* OVERVIEW BOOK */
-#overview > form.book {
-
-}
-
-/* OVERVIEW BOOKING */
-#overview > form.booking {
-
-}
-
-
-/* OVERVIEW CONNECT (sign-up / log-in) */
-#overview > form.connect {
-
-}
-
-/* OVERVIEW BUY CREDIT */
-#overview > form.buy {
-
 }
 
 #overview > form > fieldset > label dd { font-weight: 900 }
@@ -531,13 +511,17 @@ footer svg path { fill: var(--c6) }
   </div>
   <form data-speed=-0.5 class="buy">
     <h2>access</h2>
-    <a id="day-pass" href="https://book.stripe.com/test_aEU7uDgZgeKK7wk6op">
-      Day Pass (<b>15€</b>+VAT)
+    <p>
+      Book for today !
+    </p>
+    <a id="full-pass" href="https://buy.stripe.com/9AQ8wUfTIaGydeE004">Day Pass <b>15€</b></a><a id="half-pass" href="https://buy.stripe.com/00g4gEbDscOGcaAaEG" style="display: none">Half Day <b>10€</b></a><a id="happy-pass" href="https://buy.stripe.com/9AQ8wUfTIaGydeE004" style="display: none">Happy Hour <b>5€</b></a>
+    or
+    <a href="https://buy.stripe.com/9AQfZm5f415Y7Uk4gl">
+      Monthly Pass <b>150€</b>
     </a>
-    <div id="month-pass" class="separator">or</div>
-    <a href="https://book.stripe.com/test_8wM8yHgZgdGGcQEcMO">
-      Monthly Pass (<b>150€</b>+VAT)
-    </a>
+    <p>
+      Open from 8h to 22h
+    </p>
   </form>
   <!--
   A space to
@@ -566,7 +550,7 @@ footer svg path { fill: var(--c6) }
       <li>🥤 Fresh filtered water</li>
     </ul>
     <p>
-      Oh, and we open from 8h to 22h and even during the weekends, that's more than double traditional coworks hours.
+      Oh, and we open even during the weekends, more than double traditional coworks hours.
     </p>
   </div>
   <div>
@@ -768,16 +752,6 @@ footer svg path { fill: var(--c6) }
 
 const booking = $`#overview > form.buy`
 
-console.log({ booking })
-
-console.log(QrCreator.render({
-  "text": "Hello world of QR codes!",
-  "radius": "0.3",
-  "ecLevel": "H",
-  "fill": "#fff",
-  "size": "340"
-}, booking))
-
 // hot reload LOL
 if (location.hostname === 'localhost') {
   let prev
@@ -803,7 +777,28 @@ if (location.hostname === 'localhost') {
   console.log('IS DEV')
 }
 
+const updateTime = () => {
+  const hours = new Date().getHours() + 15
+  $`#full-pass`.style.display = (hours < 14 && hours > 0) ? '' : 'none'
+  $`#half-pass`.style.display = (hours < 18 && hours > 14) ? '' : 'none' 
+  $`#happy-pass`.style.display = (hours < 24 && hours > 18) ? '' : 'none'
+}
+updateTime()
+setInterval(updateTime, 60000)
+
 /*
+
+Full Day   https://buy.stripe.com/9AQ8wUfTIaGydeE004
+
+console.log(QrCreator.render({
+  "text": "Hello world of QR codes!",
+  "radius": "0.3",
+  "ecLevel": "H",
+  "fill": "#fff",
+  "size": "340"
+}, booking))
+
+
 commented until fixed
 // super dumb paralax
 let _rid, _Y, _W
