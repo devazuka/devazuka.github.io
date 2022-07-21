@@ -282,7 +282,7 @@ header a { display: inline-flex }
   height: calc(min(100vw, 800px));
   margin-top: 25px;
   margin-left: 250px;
-  background-image: url(place.jpeg);
+  background-image: url(place.png);
   background-size: cover;
   background-position: center bottom;
   clip-path: polygon(0 var(--slant), 100% 0%, 100% var(--rlant), 0 100%);
@@ -514,9 +514,9 @@ footer svg path { fill: var(--c6) }
     <p>
       Book for today !
     </p>
-    <a id="full-pass" href="https://buy.stripe.com/9AQ8wUfTIaGydeE004">Day Pass <b>15€</b></a><a id="half-pass" href="https://buy.stripe.com/00g4gEbDscOGcaAaEG" style="display: none">Half Day <b>10€</b></a><a id="happy-pass" href="https://buy.stripe.com/9AQ8wUfTIaGydeE004" style="display: none">Happy Hour <b>5€</b></a>
+    <a id="full-pass" href="https://buy.stripe.com/9AQfZm5f415Y7Uk4gl">Day Pass <b>15€</b></a><a id="half-pass" href="https://buy.stripe.com/00g4gEbDscOGcaAaEG" style="display: none">Half Day <b>10€</b></a><a id="happy-pass" href="https://buy.stripe.com/7sI28w5f46qi4I83cf" style="display: none">Happy Hour <b>5€</b></a>
     or
-    <a href="https://buy.stripe.com/9AQfZm5f415Y7Uk4gl">
+    <a href="https://buy.stripe.com/9AQ8wUfTIaGydeE004">
       Monthly Pass <b>150€</b>
     </a>
     <p>
@@ -778,17 +778,15 @@ if (location.hostname === 'localhost') {
 }
 
 const updateTime = () => {
-  const hours = new Date().getHours() + 15
-  $`#full-pass`.style.display = (hours < 14 && hours > 0) ? '' : 'none'
-  $`#half-pass`.style.display = (hours < 18 && hours > 14) ? '' : 'none' 
-  $`#happy-pass`.style.display = (hours < 24 && hours > 18) ? '' : 'none'
+  const hours = new Date().getHours()
+  $`#full-pass`.style.display = hours < 14 && hours >= 0 ? '' : 'none'
+  $`#half-pass`.style.display = hours < 18 && hours >= 14 ? '' : 'none'
+  $`#happy-pass`.style.display = hours < 24 && hours >= 18 ? '' : 'none'
 }
 updateTime()
 setInterval(updateTime, 60000)
 
 /*
-
-Full Day   https://buy.stripe.com/9AQ8wUfTIaGydeE004
 
 console.log(QrCreator.render({
   "text": "Hello world of QR codes!",
