@@ -1,4 +1,4 @@
-import { defineEntity } from './atoms.js'
+import { defineEntity, db } from './atoms.js'
 
 export const User = defineEntity('user', {
   // identification
@@ -61,5 +61,3 @@ export const refund = (stripeCheckoutId) => {
 // - find the latest stripe info
 
 // update transaction on strip events (webhook)
-
-console.log(getActiveUsers())

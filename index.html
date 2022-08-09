@@ -72,11 +72,25 @@ typeof e)throw Error("bad rs block @ typeNumber:"+b+"/errorCorrectLevel:"+a);b=e
   <style type="text/css">
 /* GLOBAL */
 @font-face {
-  font-family: 'Inconsolata';
+  font-family: 'ft88';
   font-style: normal;
   font-weight: 400;
-  src: url(https://fonts.gstatic.com/s/inconsolata/v30/QlddNThLqRwH-OJ1UHjlKENVzlm-WkL3GZQmAwPyya15.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  src: url(/ft88-expanded-min.woff2) format('woff2');
+  unicode-range: U+0020,U+0041,U+0042,U+0043,U+0044,U+0045,U+0047,U+0048,U+0049,U+004B,U+004C,U+004E,U+004F,U+0050,U+0052,U+0053,U+0055,U+0056,U+0057,U+0059,U+005A;
+}
+@font-face {
+  font-family: 'league-mono';
+  font-style: normal;
+  font-weight: 100 800;
+  /* wdth: 100 200 */
+  src: url(/league-mono-variable-min.woff2) format('woff2');
+  unicode-range: U+0020,U+0041,U+0042,U+0043,U+0044,U+0045,U+0047,U+0048,U+0049,U+004B,U+004C,U+004E,U+004F,U+0050,U+0052,U+0053,U+0055,U+0056,U+0057,U+0059,U+005A;
+}
+@font-face {
+  font-family: 'sligoil-micro';
+  font-style: normal;
+  font-weight: 400;
+  src: url(/sligoil-micro.woff2) format('woff2');
 }
 :root {
   --c6: #fff;
@@ -94,7 +108,7 @@ typeof e)throw Error("bad rs block @ typeNumber:"+b+"/errorCorrectLevel:"+a);b=e
 }
 
 *, *::before, *::after {
-  font-family: 'Inconsolata', monospace;
+  font-family: 'sligoil-micro', monospace;
   color: inherit;
   box-sizing: border-box;
   margin: 0;
@@ -493,9 +507,39 @@ footer a svg {
 }
 footer svg path { fill: var(--c6) }
 
+h2 span {
+  font-family: 'league-mono';
+  font-weight: 400;
+  font-variation-settings: 'wdth' 87
+}
+.b {
+  font-weight: 800;
+}
+.px {
+  font-family: 'ft88';
+  display: inline-block;
+  margin: 0px -0.1em;
+}
+.dbg {
+  display: block;
+  position: fixed;
+  top: 0;
+}
+.dbg:first-child {
+}
+body{
+  position: relative;
+  padding-top: 100px;
+}
   </style>
 </head>
 <body>
+  <h2 class="dbg">
+    <span class="b">D</span><span class="b">E</span><span class="b">V</span><span>A</span><span class="px">Z</span><span>U</span><span>K</span><span>A</span>
+  </h2>
+  <h2 class="dbg">
+    <span class="b">D</span><span class="b">E</span><span class="b">V</span><span>A</span><span>Z</span><span>Z</span><span>U</span><span>K</span><span>A</span>
+  </h2>
 <header class="wide">
   <h1 id="devazuka">
     <a href="#devazuka">
