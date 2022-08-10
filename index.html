@@ -513,22 +513,40 @@ footer a svg {
 }
 footer svg path { fill: var(--c6) }
 
-.styled, .styled * {
-  font-family: league-mono;
-  font-weight: 400;
-  font-variation-settings: 'wdth' 77;
-  color: black;
+.styled {
   line-height: 1.3em;
   font-size: calc(min(9vw, 12.6vh));
   white-space: nowrap;
+  flex-wrap: wrap;
   text-align: center;
+  display: flex;
+  cursor: default;
+  user-select: none;
+  color: black;
 }
+.styled > div { display: flex }
+
+.styled .devazuka:hover .i,
+.styled * {
+  font-family: league-mono;
+  font-weight: 400;
+  font-variation-settings: 'wdth' 77;
+  display: initial;
+  margin-left: initial;
+  letter-spacing: initial;
+}
+
 .styled u, .styled u * {
   text-decoration: none;
   color: #9e8dff;
 }
-.styled b { font-weight: 800 }
-.styled i {
+
+.styled .b { font-weight: 800 }
+.styled .b:hover { font-weight: 100 }
+.styled .b { transition: font-weight 0.5s; }
+.styled .l {
+}
+.styled .i, .styled .devazuka:hover .l:hover {
   font-family: ft88;
   font-style: normal;
   display: inline-block;
@@ -540,22 +558,28 @@ footer svg path { fill: var(--c6) }
 .fumetto-r:after,
 .human:after,
 .bulb:after,
-.face {
-  font-family: mister-pixel-tools;
-  display: inline-block;
+.face-bland, .face-glasses, .face-sad, .face {
+  display: inline-flex;
   margin-top: -0.15em;
   font-size: 0.8em;
+}
+.face-bland:before, .face-glasses:before, .face-sad:before, .face {
+  font-family: mister-pixel-tools;
   vertical-align: text-top;
 }
+.face-glasses:before { content: '5' }
+.face-glasses:hover:before { content: '4' }
+.face-bland:before { content: '2' }
+.face-bland:hover:before { content: '0' }
 .fumetto-l:after { content: ',' }
 .fumetto-r:after { content: '.' }
 .human:after { content: 'L' }
 .bulb:after { content: 'T' }
-.hover:hover div:nth-child(odd) {
+.hover:hover > *:nth-child(odd) {
   display: none;
 }
-.hover div:nth-child(even) { display: none }
-.hover:hover div:nth-child(even) {
+.hover > *:nth-child(even) { display: none }
+.hover:hover > *:nth-child(even) {
   display: initial;
 }
 
@@ -563,21 +587,89 @@ footer svg path { fill: var(--c6) }
 </head>
 <body>
   <div class="styled">
-  <u><b>DEV</b>AZ<i>U</i>KA</u><span class="face">4</span><b>DEV</b>A<i>Z</i>UKA<br>
+    <div>
+      <u><!--
+     --><span class="b">D</span><!--
+     --><span class="b">E</span><!--
+     --><span class="b">V</span><!--
+     --><span class="devazuka"><!--
+       --><span class="l">A</span><!--
+       --><span class="l">Z</span><!--
+       --><span class="l i">U</span><!--
+       --><span class="l">K</span><!--
+       --><span class="l">A</span>
+        </span>
+      </u>
+      <span class="face-glasses"></span><!--
+     --><span class="b">D</span><!--
+     --><span class="b">E</span><!--
+     --><span class="b">V</span><!--
+     --><span class="devazuka"><!--
+       --><span class="l">A</span><!--
+       --><span class="l i">Z</span><!--
+       --><span class="l">U</span><!--
+       --><span class="l">K</span><!--
+       --><span class="l">A</span>
+     </span>
+    </div>
+    <div class="hover">
+      <div><span class="face-bland"></span><span class="b" style="font-variation-settings: 'wdth' 65">HYBRID</span><span class="i">SPACE</span><span class="face-bland"></span></div>
+      <div><span class="i">HYBRID</span><span class="b" style="font-variation-settings: 'wdth' 68">SPACE</span><span class="face-bland"></span></div>
+    </div>
+    <div class="hover">
+      <div><span class="face-bland"></span><u><span class="i">CO</span><span class="b" style="font-variation-settings: 'wdth' 99">LEARN</span><span class="i">ING</span></u><span class="face-bland"></span></div>
+      <div><span class="face-bland"></span><u><span class="b" style="font-variation-settings: 'wdth' 92">CO</span><span class="i">LEARN</span><span class="b" style="font-variation-settings: 'wdth' 92">ING</span></u><span class="face">2</span></div>
+    </div>
+    <div><!--
+   --><span class="b">D</span><!--
+   --><span class="b">E</span><!--
+   --><span class="b">V</span><!--
+   --><span class="devazuka"><!--
+     --><span class="l">A</span><!--
+     --><span class="l">Z</span><!--
+     --><span class="l i">U</span><!--
+     --><span class="l">K</span><!--
+     --><span class="l">A</span>
+      </span>
+      <span class="face-glasses"></span><!--
+     --><span class="b">D</span><!--
+     --><span class="b">E</span><!--
+     --><span class="b">V</span><!--
+     --><span class="devazuka"><!--
+       --><span class="l">A</span><!--
+       --><span class="l i">Z</span><!--
+       --><span class="l">U</span><!--
+       --><span class="l">K</span><!--
+       --><span class="l">A</span>
+     </span>
+    </div>
   <div class="hover">
-    <div><span class="face">2</span><b style="font-variation-settings: 'wdth' 65">HYBRID</b><i>SPACE</i><span class="face">2</span></div>
-    <div><i>HYBRID</i><b style="font-variation-settings: 'wdth' 68">SPACE</b><span class="face">2</span></div>
+    <div><span class="face">2</span><span class="face">3</span><u style="font-variation-settings: 'wdth' 73">CO<span class="i">WORK</span><span class="b" style="font-variation-settings: 'wdth' 73">ING</span></u></span><span class="face">0</span><span class="face">2</span></div>
+    <div><span class="face">2</span><span class="face">3</span><u style="font-variation-settings: 'wdth' 102">CO<span class="b" style="font-variation-settings: 'wdth' 102">WORK</span><span class="i">ING</span></u></span><span class="face">0</span><span class="face">2</span></div>
   </div>
-  <div class="hover">
-    <div><span class="face">2</span><u><i>CO</i><b style="font-variation-settings: 'wdth' 99">LEARN</b><i>ING</i></u><span class="face">2</span></div>
-    <div><span class="face">2</span><u><b style="font-variation-settings: 'wdth' 92">CO</b><i>LEARN</i><b style="font-variation-settings: 'wdth' 92">ING</b></u><span class="face">2</span></div>
-  </div>
-  <b>DEV</b>AZU<i>K</i>A<span class="face">4</span><b>DEV</b>AZ<i>U</i>KA<br>
-  <div class="hover">
-    <div><span class="face">2</span><span class="face">3</span><u style="font-variation-settings: 'wdth' 73">CO<i>WORK</i><b style="font-variation-settings: 'wdth' 73">ING</b></u></span><span class="face">0</span><span class="face">2</span></div>
-    <div><span class="face">2</span><span class="face">3</span><u style="font-variation-settings: 'wdth' 102">CO<b style="font-variation-settings: 'wdth' 102">WORK</b><i>ING</i></u></span><span class="face">0</span><span class="face">2</span></div>
-  </div>
-  <b>DEV</b>A<i>Z</i>UKA<span class="face">1</span><b>DEV</b>AZU<i>K</i>A<br>
+    <div><!--
+   --><span class="b">D</span><!--
+   --><span class="b">E</span><!--
+   --><span class="b">V</span><!--
+   --><span class="devazuka"><!--
+     --><span class="l">A</span><!--
+     --><span class="l">Z</span><!--
+     --><span class="l i">U</span><!--
+     --><span class="l">K</span><!--
+     --><span class="l">A</span>
+      </span>
+      <span class="face-glasses"></span><!--
+     --><span class="b">D</span><!--
+     --><span class="b">E</span><!--
+     --><span class="b">V</span><!--
+     --><span class="devazuka"><!--
+       --><span class="l">A</span><!--
+       --><span class="l i">Z</span><!--
+       --><span class="l">U</span><!--
+       --><span class="l">K</span><!--
+       --><span class="l">A</span>
+     </span>
+    </div>
   </div>
 <header class="wide">
   <h1 id="devazuka">
