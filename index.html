@@ -72,14 +72,14 @@ typeof e)throw Error("bad rs block @ typeNumber:"+b+"/errorCorrectLevel:"+a);b=e
   <style type="text/css">
 /* GLOBAL */
 @font-face {
-  font-family: 'ft88';
+  font-family: ft88;
   font-style: normal;
   font-weight: 400;
   src: url(/ft88-expanded-min.woff2) format('woff2');
   unicode-range: U+0020,U+0041,U+0042,U+0043,U+0044,U+0045,U+0047,U+0048,U+0049,U+004B,U+004C,U+004E,U+004F,U+0050,U+0052,U+0053,U+0055,U+0056,U+0057,U+0059,U+005A;
 }
 @font-face {
-  font-family: 'league-mono';
+  font-family: league-mono;
   font-style: normal;
   font-weight: 100 800;
   /* wdth: 100 200 */
@@ -87,10 +87,16 @@ typeof e)throw Error("bad rs block @ typeNumber:"+b+"/errorCorrectLevel:"+a);b=e
   unicode-range: U+0020,U+0041,U+0042,U+0043,U+0044,U+0045,U+0047,U+0048,U+0049,U+004B,U+004C,U+004E,U+004F,U+0050,U+0052,U+0053,U+0055,U+0056,U+0057,U+0059,U+005A;
 }
 @font-face {
-  font-family: 'sligoil-micro';
+  font-family: sligoil-micro;
   font-style: normal;
   font-weight: 400;
   src: url(/sligoil-micro.woff2) format('woff2');
+}
+@font-face {
+  font-family: mister-pixel-tools; /*012345‚LTL·*/
+  font-style: normal;
+  font-weight: 400;
+  src: url(/mister-pixel-tools.woff2) format('woff2');
 }
 :root {
   --c6: #fff;
@@ -108,7 +114,7 @@ typeof e)throw Error("bad rs block @ typeNumber:"+b+"/errorCorrectLevel:"+a);b=e
 }
 
 *, *::before, *::after {
-  font-family: 'sligoil-micro', monospace;
+  font-family: sligoil-micro, monospace;
   color: inherit;
   box-sizing: border-box;
   margin: 0;
@@ -507,39 +513,52 @@ footer a svg {
 }
 footer svg path { fill: var(--c6) }
 
-h2 span {
-  font-family: 'league-mono';
+.styled, .styled * {
+  font-family: league-mono;
   font-weight: 400;
-  font-variation-settings: 'wdth' 87
+  font-variation-settings: 'wdth' 87;
+  color: black;
+  line-height: 1.3em;
 }
-.b {
-  font-weight: 800;
+.styled u, .styled u * {
+  text-decoration: none;
+  color: #9e8dff;
 }
-.px {
-  font-family: 'ft88';
+.styled b { font-weight: 800 }
+.styled i {
+  font-family: ft88;
+  font-style: normal;
   display: inline-block;
   margin: 0px -0.1em;
 }
-.dbg {
-  display: block;
-  position: fixed;
-  top: 0;
+
+.fumetto-l:after,
+.fumetto-r:after,
+.human:after,
+.bulb:after,
+.face {
+  font-family: mister-pixel-tools;
+  display: inline-block;
+  margin-top: -0.15em;
+  font-size: 0.8em;
+  vertical-align: text-top;
 }
-.dbg:first-child {
-}
-body{
-  position: relative;
-  padding-top: 100px;
-}
+.fumetto-l:after { content: ',' }
+.fumetto-r:after { content: '.' }
+.human:after { content: 'L' }
+.bulb:after { content: 'T' }
+
   </style>
 </head>
 <body>
-  <h2 class="dbg">
-    <span class="b">D</span><span class="b">E</span><span class="b">V</span><span>A</span><span class="px">Z</span><span>U</span><span>K</span><span>A</span>
-  </h2>
-  <h2 class="dbg">
-    <span class="b">D</span><span class="b">E</span><span class="b">V</span><span>A</span><span>Z</span><span>Z</span><span>U</span><span>K</span><span>A</span>
-  </h2>
+  <div class="styled">
+  <u><b>DEV</b>AZ<i>U</i>KA</u><span class="face">4</span><b>DEV</b>A<i>Z</i>UKA<br>
+  <span class="face">2</span><b style="font-variation-settings: 'wdth' 68">HYBRID</b><i>SPACE</i><span class="face">2</span><br>
+  <span class="face">2</span><u><i>CO</i><b style="font-variation-settings: 'wdth' 105">LEARN</b><i>ING</i></u><span class="face">2</span><br>
+  <b>DEV</b>AZU<i>K</i>A<span class="face">4</span><b>DEV</b>AZ<i>U</i>KA<br>
+  <div style="letter-spacing: 0.15em;"><span class="face">3</span></span><u>CO<i>WORK</i><b>ING</b></u></span><span class="face">0</span><br></div>
+  <b>DEV</b>A<i>Z</i>UKA<span class="face">1</span><b>DEV</b>AZU<i>K</i>A<br>
+  </div>
 <header class="wide">
   <h1 id="devazuka">
     <a href="#devazuka">
