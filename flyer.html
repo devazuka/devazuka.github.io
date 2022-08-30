@@ -76,6 +76,7 @@ body {
   margin-top: -9.5vw;
 }
 
+.card.scan h2 { letter-spacing: -0.15vw }
 .card h2:after {
   position: absolute;
   font-family: monospace;
@@ -204,7 +205,8 @@ every Thursday on Meetup
 and daily practice sessions
 `)
 
-const qr = card('Scan', ``)
+const qr = card('Scan me', ``)
+qr.classList.add('scan')
 QrCreator({
   "text": `https://devazuka.com?ref=flyer-${Date.now()}`,
   "radius": "0",
