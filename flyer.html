@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+<script type="text/javascript">
+const add = (a, b) => a + b
+const TAG = fn => (inputs, ...args) => fn(args.reduce(add, inputs))
+const poly = children => children[0]?.constructor === Object
+  ? { props: children[0], children: children.slice(1) }
+  : { children }
+
+Object.assign(window, {
+  $$: TAG((q) => [...document.querySelectorAll(q)]),
+  $: TAG(document.querySelector.bind(document)),
+  h: new Proxy({}, { get: (cache, tag) => cache[tag] || (cache[tag] = (...args) => {
+    const { props, children } = poly(args)
+    const elem = Object.assign(document.createElement(tag), props)
+    children.length && elem.append(...children)
+    return elem
+  })})
+})
+</script>
+<style>
+/* GLOBAL */
+@font-face {
+  font-family: ft88;
+  font-style: normal;
+  font-weight: 400;
+  src: url(/ft88-expanded-min.woff2) format('woff2');
+  unicode-range: U+0020,U+0041,U+0042,U+0043,U+0044,U+0045,U+0047,U+0048,U+0049,U+004B,U+004C,U+004E,U+004F,U+0050,U+0052,U+0053,U+0055,U+0056,U+0057,U+0059,U+005A;
+}
+
+@font-face {
+  font-family: league-mono;
+  font-style: normal;
+  font-weight: 100 800;
+  /* wdth: 100 200 */
+  src: url(/league-mono-variable-min.woff2) format('woff2');
+  unicode-range: U+0020,U+0041,U+0042,U+0043,U+0044,U+0045,U+0047,U+0048,U+0049,U+004B,U+004C,U+004E,U+004F,U+0050,U+0052,U+0053,U+0055,U+0056,U+0057,U+0059,U+005A;
+}
+
+@font-face {
+  font-family: sligoil-micro;
+  font-style: normal;
+  font-weight: 400;
+  src: url(/sligoil-micro.woff2) format('woff2');
+}
+
+@font-face {
+  font-family: mister-pixel-tools; /*012345‚LTL·*/
+  font-style: normal;
+  font-weight: 400;
+  src: url(/mister-pixel-tools.woff2) format('woff2');
+}
+
+body {
+  margin: 0 auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+*, *:after, *:before { box-sizing: border-box }
+
+@media print {
+  @page {
+    size: A4;
+  }
+}
+#cards {
+  display: flex;
+  align-items: flex-end;
+  margin-top: -9.5vw;
+}
+
+.card h2:after {
+  position: absolute;
+  font-family: monospace;
+  font-size: 2vw;
+  content: 'x';
+  top: -0.15vw;
+  right: 0.5vw;
+  transform: matrix(1,0,0,0.85,0,0);
+}
+
+.card p { margin: 0 }
+.card p > div {
+  font-size: 2.07vw;
+  margin-left: 2vw;
+  margin-right: 2vw;
+}
+.card p > div:first-child { margin-top: 2vw }
+.card p > div:last-child { margin-bottom: 2vw }
+.card h2 {
+  position: relative;
+  font-weight: normal;
+  font-size: 4.5vw;
+  margin: 0;
+  padding: 0.75vw 2vw;
+  border-bottom: 0.4vw solid;
+}
+.card canvas {
+  margin: 0.5vw;
+  width: 20vw;
+}
+.card:last-child {
+  border-right: 0.4vw solid;
+}
+.card {
+  font-family: sligoil-micro;
+  display: flex;
+  flex-direction: column;
+  border: 0.4vw solid;
+  border-right: 0;
+  background: white;
+}
+.big, .lit, .px, .face {
+  display: inline-flex;
+  justify-content: center;
+}
+.big, .lit {
+  font-family: league-mono;
+}
+.lit {
+  font-size: 8.5vw;
+  width: 5vw;
+}
+.big {
+  font-weight: 900;
+  font-size: 8.5vw;
+  width: 4.75vw;
+  font-variation-settings: 'wdth' 77;
+}
+.px {
+  font-family: ft88;
+  font-size: 8.5vw;
+  width: 9.75vw;
+}
+.px.Y { transform: translate(-0.9vw, 0) }
+.face {
+  font-family: mister-pixel-tools;
+  font-size: 6vw;
+  width: 7.5vw;
+  top: -1vw;
+  position: relative;
+  user-select: none;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+</body>
+<script type="module">
+import { QrCreator } from './qr.min.js'
+
+// DEVAZUKA MAKER
+const { div, b, span, h2, p } = h
+const cut = (str, at) => [str.slice(0, at), str[at], str.slice(at + 1)]
+const LIT = text => [...text].map(c => span({ className: `lit ${c}` }, c))
+const BG = text => [...text].map(c => span({ className: `big ${c}` }, c))
+const PX = text => [...text].map(c => span({ className: `px ${c}` }, c))
+const shuffle = arr => {
+  const rand = arr.map(k => ([Math.random(),k])).sort(([a],[b]) => a - b).map(e => e[1])
+  let i = -1
+  return () => {
+    i = (i + 1) % rand.length
+    return rand[i]
+  }
+}
+const rand5 = shuffle([...Array('AZUKA'.length).keys()])
+const icons = '112224679ACDEFGIJLMNOPQRSTUVWXYZ,[]'
+const rand11 = shuffle([...Array(icons.length).keys()])
+
+const DEVAZUKA = () => {
+  const [l, px, r] = cut('AZUKA', rand5())
+  return span({ className: 'DEVAZUKA' }, ...BG('DEV'), ...LIT(l), ...PX(px), ...LIT(r))
+}
+
+const face = () => {
+  const onclick = (e) => {
+    e.target.textContent = icons[rand11()]
+  }
+  return span({ className: 'face', onclick }, icons[rand11()])
+}
+const line = (...args) => div({ className: 'line' }, ...args)
+const card = (title, content) => div(
+  { className: 'card' },
+  h2(title),
+  p(...content.trim().split('\n').map(txt => txt && div(txt.trim()))),
+)
+
+const coworking = card('Coworking', `
+Book your Day Pass 15€
+or Monthly Pass 150€
+Open from 8h to 22h
+`)
+
+const colearning = card('Colearning', `
+Free coding beginners workshop
+every Thursday on Meetup
+and daily practice sessions
+`)
+
+const qr = card('Scan', ``)
+QrCreator({
+  "text": `https://devazuka.com?ref=flyer-${Date.now()}`,
+  "radius": "0",
+  "ecLevel": "H",
+  "fill": "#000",
+  "size": "340"
+}, qr)
+const style = s => e => (Object.assign(e.style, s), e)
+const hybridSPACE = [...BG('HYBRID'), ...PX('SPACE').map(style({ width: '10.8vw' }))]
+const HYBRIDspace = [...PX('HYBRID'), ...BG('SPACE')]
+const COlearnING = [
+  ...PX('CO').map(style({ width: '11vw' })),
+  ...BG('LEARN').map(style({ width: '5.4vw', fontVariationSettings: "'wdth' 110" })),
+  ...PX('ING').map(style({ width: '11vw' })),
+]
+const coLEARNing = [
+  ...BG('CO').map(style({ width: '5.3vw' })),
+  ...PX('LEARN').map(style({ width: '11vw' })),
+  ...BG('ING').map(style({ width: '5.3vw' })),
+]
+const coWORKing = [
+  ...BG('CO').map(style({ width: '5.4vw', fontVariationSettings: "'wdth' 110" })),
+  ...PX('WORK').map(style({ width: '12vw' })),
+  ...BG('ING').map(style({ width: '5.4vw', fontVariationSettings: "'wdth' 110" })),
+]
+const COworkING = [
+  ...PX('CO').map(style({ width: '11vw' })),
+  ...BG('WORK'),
+  ...PX('ING').map(style({ width: '11vw' })),
+]
+
+document.body.append(...[
+  line(DEVAZUKA(), face(), DEVAZUKA()),
+  line(face(), ...hybridSPACE, face()),
+  line(DEVAZUKA(), face(), DEVAZUKA()),
+  line(face(), ...COlearnING, face()),
+  line(DEVAZUKA(), face(), DEVAZUKA()),
+  line(face(), ...coWORKing, face(), face()),
+  line(DEVAZUKA(), face(), DEVAZUKA()),
+  line(face(), ...HYBRIDspace, face()),
+  line(DEVAZUKA(), face(), DEVAZUKA()),
+  line(face(), ...coLEARNing, face()),
+  line(DEVAZUKA(), face(), DEVAZUKA()),
+  line(face(), ...COworkING, face(), face()),
+  line(DEVAZUKA(), face(), DEVAZUKA()),
+  div(
+    { id: 'cards' },
+    coworking,
+    colearning,
+    qr,
+  ),
+])
+
+</script>
+</html>

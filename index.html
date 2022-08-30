@@ -27,7 +27,7 @@
   <script type="text/javascript">
 const add = (a, b) => a + b
 const TAG = fn => (inputs, ...args) => fn(args.reduce(add, inputs))
-const poly = children => children[0]?.prototype === Object
+const poly = children => children[0]?.constructor === Object
   ? { props: children[0], children: children.slice(1) }
   : { children }
 
