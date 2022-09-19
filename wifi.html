@@ -1,0 +1,95 @@
+<!-- 9.5' x 4.8' -->
+<style>
+
+@font-face {
+  font-family: league-mono;
+  font-style: normal;
+  font-weight: 100 800;
+  /* wdth: 100 200 */
+  src: url(./league-mono-variable.woff2) format('woff2');
+}
+
+@font-face {
+  font-family: sligoil-micro;
+  font-style: normal;
+  font-weight: 400;
+  src: url(./sligoil-micro.woff2) format('woff2');
+}
+
+body {
+  margin: 0 auto;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items:flex-start;
+  align-content: flex-start;
+  justify-content: center;
+  padding-top: 2vw;
+}
+.card h3, .card h2 {
+  font-family: league-mono;
+  margin: 0;
+  font-size: 2.4vw;
+  font-weight: 200;
+}
+.card h3 > span, .card h2 > span {
+  font-weight: 700;
+}
+.card h2 > i {
+  font-variation-settings: 'wdth' 80;
+  font-weight: 200;
+  font-size: 1.8vw;
+  margin-left: 0.5vw;
+}
+.card {
+  outline: 0.5px dotted #ccc;
+  padding: 1vw;
+  width: 24vw;
+  height: auto;
+}
+
+*, *:after, *:before { box-sizing: border-box }
+
+img { width: 100% }
+
+
+</style>
+<body>
+<template id="card-template">
+  <div class="card">
+    <h2>WiFi: <span contenteditable>DEVAZUKA</span></h2>
+    <h3>Pass: <span contenteditable>zukadeva</span></h3>
+  </div>
+</template>
+</body>
+<script type="module">
+import { QrCreator } from './qr.min.js'
+
+const params = Object.fromEntries(new URLSearchParams(location.search))
+params.wifi || (params.wifi = 'DEVAZUKA')
+params.pass || (params.pass = 'zukadeva')
+history.replaceState(null, '', `${location.pathname}?${new URLSearchParams(params)}`)
+
+const cardTemplate = document.querySelector('#card-template')
+const QR = document.createElement('canvas')
+QrCreator({
+  text: `WIFI:S:${params.wifi};T:WPA;P:${params.pass};;`,
+  radius: 0, // 0.0 to 0.5
+  ecLevel: 'H', // L, M, Q, H
+  // fill: '#536DFE', // foreground color
+  size: 1280 // in pixels
+}, QR)
+const QRSrc = QR.toDataURL()
+
+const imgs = []
+const makeCard = () => {
+  const card = cardTemplate.content.cloneNode(true).firstElementChild
+  const img = new Image()
+  img.src = QRSrc
+  imgs.push(img)
+  card.append(img)
+  return card
+}
+
+document.body.append(...[...Array(16).keys()].map(makeCard))
+</script>

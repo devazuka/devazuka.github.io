@@ -1,0 +1,82 @@
+<!-- 9.5' x 4.8' -->
+<style>
+
+@font-face {
+  font-family: league-mono;
+  font-style: normal;
+  font-weight: 100 800;
+  /* wdth: 100 200 */
+  src: url(./league-mono-variable.woff2) format('woff2');
+}
+
+@font-face {
+  font-family: sligoil-micro;
+  font-style: normal;
+  font-weight: 400;
+  src: url(./sligoil-micro.woff2) format('woff2');
+}
+
+body {
+  margin: 0 auto;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items:flex-start;
+  align-content:flex-start;
+}
+.card h2 {
+  font-family: league-mono;
+  margin: 0;
+  padding-bottom: 3vw;
+  font-size: 2.8vw;
+}
+.card h2 > i {
+  font-variation-settings: 'wdth' 80;
+  font-weight: 200;
+  font-size: 1.8vw;
+  margin-left: 0.5vw;
+}
+.card h2 > b {
+  font-variation-settings: 'wdth' 100;
+  font-weight: 600;
+}
+.card .info, .card .artist {
+  font-size: 1.7vw;
+  font-family: sligoil-micro;
+}
+.card {
+  outline: 0.5px dotted #ccc;
+  padding: 6.8vw;
+  width: 50%;
+  height: auto;
+}
+
+*, *:after, *:before { box-sizing: border-box }
+
+@media print {
+  @page {
+    /*size: 19cm 28.8cm;*/
+    size: 190mm 288mm;
+  }
+}
+</style>
+<body>
+</body>
+<script type="module">
+
+const res = await fetch('https://opensheet.elk.sh/1cXmK2FGPs9ndNVE8_Lg8HvE3Lu0ArCj9ga3FCvtRlzw/1')
+const data = await res.json()
+
+document.body.innerHTML = data
+  .map((art, i) =>
+`
+<div class="card">
+  <h2><b>${art.Title || 'Sem Título'}</b><i>nº${art['#'] || i}</i></h2>
+  <div class="artist">${art.Artist|| 'Artista Desconhecido'}</div>
+  <div class="info">${[art.Year, art.Technique].filter(Boolean).join(' | ')||'-'}</div>
+  <div class="info">${[art.Dimensions, art.Price].filter(Boolean).join(' | ')}</div>
+</div>
+`.trim())
+  .join('')
+
+</script>
