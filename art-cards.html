@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
 <!-- 9.5' x 4.8' -->
 <style>
 
@@ -27,7 +33,6 @@ body {
 .card h2 {
   font-family: league-mono;
   margin: 0;
-  padding-bottom: 3vw;
   font-size: 2.8vw;
 }
 .card h2 > i {
@@ -40,15 +45,38 @@ body {
   font-variation-settings: 'wdth' 100;
   font-weight: 600;
 }
-.card .info, .card .artist {
+.card .info, .card .title {
   font-size: 1.7vw;
   font-family: sligoil-micro;
 }
 .card {
   outline: 0.5px dotted #ccc;
-  padding: 6.8vw;
+  padding: 0 6.8vw;
   width: 50%;
-  height: auto;
+  height: 26.057vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.card .detail > div.logo,
+.card .detail > div.qr {
+  width: 8vw;
+  height: 8vw;
+  background-size: 8vw;
+  background-position: center;
+  background-repeat: no-repeat;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+.card .title {
+  padding-top: 3vw;
+}
+
+.card .detail > div { flex-grow: 1 }
+.card .detail {
+  display: flex;
+  align-items: end;
+
 }
 
 *, *:after, *:before { box-sizing: border-box }
@@ -63,20 +91,43 @@ body {
 <body>
 </body>
 <script type="module">
+const pendingSheet = fetch('https://opensheet.elk.sh/1cXmK2FGPs9ndNVE8_Lg8HvE3Lu0ArCj9ga3FCvtRlzw/1')
+const { QrCreator }  = await import('./qr.min.js')
 
-const res = await fetch('https://opensheet.elk.sh/1cXmK2FGPs9ndNVE8_Lg8HvE3Lu0ArCj9ga3FCvtRlzw/1')
-const data = await res.json()
+const data = await (await pendingSheet).json()
+
+const generateQRSrc = link => {
+  const QR = document.createElement('canvas')
+  QrCreator({
+    text: link,
+    radius: 0, // 0.0 to 0.5
+    ecLevel: 'H', // L, M, Q, H
+    // fill: '#536DFE', // foreground color
+    size: 1280 // in pixels
+  }, QR)
+  return QR.toDataURL()
+}
+
+const cachedQR = {}
+const getQRSrc = link => cached[link] || (cached[link] = generateQRSrc(link))
 
 document.body.innerHTML = data
   .map((art, i) =>
 `
 <div class="card">
-  <h2><b>${art.Title || 'Sem Título'}</b><i>nº${art['#'] || i}</i></h2>
-  <div class="artist">${art.Artist|| 'Artista Desconhecido'}</div>
-  <div class="info">${[art.Year, art.Technique].filter(Boolean).join(' | ')||'-'}</div>
-  <div class="info">${[art.Dimensions, art.Price].filter(Boolean).join(' | ')}</div>
+  <h2><b>${art.Artist|| 'Artista Desconhecido'}</b><i>nº${art['#'] || i}</i></h2>
+  <div class="detail">
+    <div>
+      <div class="title">${art.Title || 'Sem Título'}</div>
+      <div class="info">${[art.Year, art.Technique].filter(Boolean).join(' | ')||'-'}</div>
+      <div class="info">${[art.Dimensions, art.Price].filter(Boolean).join(' | ')}</div>
+    </div>
+    <div class="logo" style="background-image: url('${art.Logo}')"></div>
+    <div class="qr" style="background-image: url('${art.Link && generateQRSrc(art.Link)}')"></div>
+  </div>
 </div>
 `.trim())
   .join('')
 
 </script>
+</html>
