@@ -53,11 +53,12 @@ body {
   outline: 0.5px dotted #ccc;
   padding: 0 6.8vw;
   width: 50%;
-  height: 26.057vw;
+  height: 25.25vw;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
+.card .detail > div.logo { margin-right: 0.15vw }
 .card .detail > div.logo,
 .card .detail > div.qr {
   width: 8vw;
@@ -84,7 +85,9 @@ body {
 @media print {
   @page {
     /*size: 19cm 28.8cm;*/
-    size: 190mm 288mm;
+    size: A4;
+    margin-left: 1cm;
+    margin-right: 1cm;
   }
 }
 </style>
@@ -115,7 +118,7 @@ document.body.innerHTML = data
   .map((art, i) =>
 `
 <div class="card">
-  <h2><b>${art.Artist|| 'Artista Desconhecido'}</b><i>nº${art['#'] || i}</i></h2>
+  <h2><b>${art.Artist|| 'Artista Desconhecido'}</b></h2>
   <div class="detail">
     <div>
       <div class="title">${art.Title || 'Sem Título'}</div>
